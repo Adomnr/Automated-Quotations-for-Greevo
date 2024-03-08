@@ -1,6 +1,8 @@
-import gspread
-from oauth2client.service_account import ServiceAccountCredentials
-from readwritegooglesheets import *
-import pandas as pd
+from datetime import datetime
 
-print(Hybrid_Offgrid_Inverters['A5'].value)
+def print_current_date_time():
+    current_date_time = datetime.now()
+    print(f"Current Date and Time: {current_date_time}")
+
+if __name__ == "__main__":
+    print_current_date_time()

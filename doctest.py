@@ -1,7 +1,7 @@
 from spire.doc import *
 from spire.doc.common import *
 
-def document_creater(SystemSize,ClientName, ClientLocation, ReferredBy, Inverter_TYP, Inverter_Name, Inverter_Watt, Name_of_Panels, panelprice, Number_of_Panels, Structure_Type, pv_balance, Carriage_Cost, Installation, Net_Metering, template_file, InverterPrice, TotalCostNormal, TotalCostRaised):
+def document_creater(SystemSize,Inverter_Watt, Number_of_Panels, Net_Metering, template_file, TotalCostNormal, TotalCostRaised, valueinwords):
     # Create a Document object
     document = Document()
 
@@ -11,18 +11,18 @@ def document_creater(SystemSize,ClientName, ClientLocation, ReferredBy, Inverter
 
     # Store the placeholders and new strings in a dictionary
     dictionary = {
-                    '[sw]': SystemSize,
-                    '[nop]': Number_of_Panels,
+                    '[sw]': str(SystemSize),
+                    '[nop]': str(Number_of_Panels),
                     '[nos]': str(NOS),
                     '[noi]': '1',
-                    '[iw]': Inverter_Watt,
+                    '[iw]': str(Inverter_Watt),
                     '[iwy]': '5',
-                    '[calculated_price]':TotalCostRaised,
-                    '[calculated_price_normal]':TotalCostNormal,
-                    '[value_in_words]':'Five Hundred Thousand',
+                    '[calculated_price]':str(TotalCostRaised),
+                    '[calculated_price_normal]':str(TotalCostNormal),
+                    '[value_in_words]':str(valueinwords),
                     '[bp]':'180,000',
                     '[bv]':'4',
-                    '[nmc]':'100,000'
+                    '[nmc]': str(Net_Metering)
                 }
 
     # Loop through the items in the dictionary

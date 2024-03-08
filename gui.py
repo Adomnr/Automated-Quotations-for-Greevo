@@ -26,6 +26,7 @@ TotalCostNormal = 0
 TotalCostRaised = 0
 UniqueID = 0
 serialNumber = 0
+valueinwords = ""
 
 generalrow = 0
 generalrowentry = 1
@@ -53,9 +54,14 @@ def getSerialNumber(*args):
     serialNumber = int(index[-1])
 
 def enter_data():
+    global valueinwords
     accepted = accept_var.get()
     total_cost_calculator()
     UniqueID = generate_unique_id()
+    if structure_type_combobox.get() == "Raised":
+        valueinwords = convert_to_words(TotalCostRaised)
+    else:
+        valueinwords = convert_to_words(TotalCostNormal)
 
     if accepted == "Accepted":
         # User info
@@ -89,15 +95,9 @@ def enter_data():
                             print("Total Cost Normal: ",TotalCostNormal,"Total Cost Raised: ",TotalCostRaised, "Unique ID: ", UniqueID)
                             print("------------------------------------------")
 
-                            record_data(SystemSize,UniqueID,ClientName, ClientLocation, ReferredBy,
-                                        Inverter_TYP, Inverter_Name, Inverter_Watt, Name_of_Panels, panelprice,
-                                        Number_of_Panels, Structure_Type, pv_balance, Carriage_Cost, Installation,
-                                        Net_Metering, template_file, InverterPrice,TotalCostNormal,TotalCostRaised)
+                            record_data(SystemSize,UniqueID,ClientName, ClientLocation, ReferredBy, Inverter_TYP, Inverter_Name, Inverter_Watt, Name_of_Panels, panelprice,Number_of_Panels, Structure_Type, pv_balance, Carriage_Cost, Installation,Net_Metering, template_file, InverterPrice,TotalCostNormal,TotalCostRaised)
 
-                            document_creater(SystemSize, ClientName, ClientLocation, ReferredBy, Inverter_TYP,
-                                             Inverter_Name, Inverter_Watt, Name_of_Panels, panelprice, Number_of_Panels,
-                                             Structure_Type, pv_balance, Carriage_Cost, Installation, Net_Metering,
-                                             template_file, InverterPrice, TotalCostNormal, TotalCostRaised)
+                            document_creater(SystemSize, Inverter_Watt, Number_of_Panels,Net_Metering, template_file, TotalCostNormal, TotalCostRaised, valueinwords)
                         else:
                             tkinter.messagebox.showwarning(title="Error", message="Enter Carriage, Installation and Net Metering Cost")
                     else:
@@ -142,15 +142,16 @@ def generate_unique_id():
 
     return unique_id
 
-def record_data(SystemSize,UniqueID,ClientName, ClientLocation, ReferredBy, Inverter_TYP, Inverter_Name, Inverter_Watt, Name_of_Panels, panelprice, Number_of_Panels, Structure_Type, pv_balance, Carriage_Cost, Installation, Net_Metering, template_file, InverterPrice,TotalCostNormal,TotalCostRaised):
+def record_data(SystemSize,UniqueID,ClientName, ClientLocation, ReferredBy, Inverter_TYP, Inverter_Name, Inverter_Watt, Name_of_Panels, panelprice,Number_of_Panels, Structure_Type, pv_balance, Carriage_Cost, Installation,Net_Metering, template_file, InverterPrice,TotalCostNormal,TotalCostRaised):
     serial_list = []
-    current_date = datetime.now().date()
+    current_date_time = datetime.now()
+    current_date_time = str(current_date_time)
     for x in Customer_Data_Sheet.col_values(1):
         serial_list.append(x)
-    SerialNumber = serial_list[-1] + 1
-    Customer_Data_Sheet.append([SerialNumber,UniqueID,SystemSize,current_date,ClientName, ClientLocation, ReferredBy, Inverter_TYP, Inverter_Name, Inverter_Watt, Name_of_Panels, panelprice, Number_of_Panels, Structure_Type, pv_balance, Carriage_Cost, Installation, Net_Metering, template_file, InverterPrice,TotalCostNormal,TotalCostRaised])
-    return
-
+    SerialNumber = int(serial_list[-1]) + 1
+    if SerialNumber == 0:
+        SerialNumber = 1
+    Customer_Data_Sheet.append_row([SerialNumber,current_date_time,UniqueID,SystemSize, ClientName,ClientLocation, ReferredBy, Inverter_TYP, Inverter_Name,Inverter_Watt, Name_of_Panels, panelprice, Number_of_Panels,Structure_Type, pv_balance, Carriage_Cost, Installation,Net_Metering,InverterPrice,TotalCostNormal,TotalCostRaised])
 
 def update_template_type(*args):
     global template_file
