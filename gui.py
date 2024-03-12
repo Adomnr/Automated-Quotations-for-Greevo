@@ -2,14 +2,9 @@
 import tkinter
 from tkinter import ttk
 from tkinter import messagebox
-import os
-import openpyxl
 from readwritegooglesheets import *
-import docx
 #For Value in words.
 import inflect
-from spire.doc import *
-from spire.doc.common import *
 from datetime import datetime
 from doctest import *
 import uuid
@@ -165,12 +160,19 @@ def update_template_type(*args):
             template_file = ".\\Templates\\HGR_Template.docx"
     print(template_file)
 
+
 def inverter_selection(*args):
+
     inverter_name_combobox.set('')
     inverter_wattage_combobox.set('')
     if inverter_type_combobox.get() == "Grid Tie":
         Inverter_name = Grid_Tie_Inverter_Names.copy()
     else:
+        if inverter_type_combobox.get() == "Hybrid":
+            as_label = tkinter.Label(user_info_frame, text="Inverter Type")
+            as_combobox = ttk.Combobox(user_info_frame, values=["Grid Tie", "Hybrid"])
+            as_label.grid(row=10, column=0)
+            as_combobox.grid(row=11, column=0)
         Inverter_name = Hybrid_Inverter_Names.copy()
     inverter_name_combobox['values'] = Inverter_name
 
@@ -182,6 +184,8 @@ def update_panel(*args):
     print(panelprice)
     for x in Solar_Panel_Wattage:
         panelwattage = Solar_Panel_Wattage[i]
+    PanelWattageInt = int(panelwattage)
+    No_of_panels = int(System_Size_combobox.get())/PanelWattageInt
     print(panelwattage)
 
 def inverter_wattage_selection(*args):
@@ -271,6 +275,9 @@ inverter_type_label.grid(row=inverterrow, column=0)
 inverter_type_combobox.grid(row=inverterrowentry, column=0)
 
 sel.trace('w',inverter_selection)
+
+
+
 inverter_name_label = tkinter.Label(user_info_frame, text="Inverter Name")
 inverter_name_combobox = ttk.Combobox(user_info_frame, values=Inverter_name,textvariable=sel3)
 inverter_name_label.grid(row=inverterrow, column=1)

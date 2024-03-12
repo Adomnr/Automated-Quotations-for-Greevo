@@ -1,9 +1,9 @@
 from docx import Document
 import os
 
-def main():
-    template_file_path = './output/ReplacePlaceholder.docx'
-    output_file_path = './wr/WR.docx'
+def tradeMarkRemover(filename):
+    template_file_path = filename
+    output_file_path = './output/'+filename
 
     variables = {
 		'Evaluation Warning: The document was created with Spire.Doc for Python.':' '
@@ -25,5 +25,3 @@ def replace_text_in_paragraph(paragraph, key, value):
                 item.text = item.text.replace(key, value)
 
 
-if __name__ == '__main__':
-    main()
