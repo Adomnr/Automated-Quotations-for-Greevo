@@ -9,37 +9,28 @@ from datetime import datetime
 from doctest import *
 import uuid
 import time
+from trademarkremover import *
+import math
 
+Inverter_name, Inverter_wattage = [], []
 
-Inverter_name = []
-Inverter_wattage = []
 template_file = ""
 InverterPrice = 0
-panelprice = 0
-panelwattage = 0
-TotalCostNormal = 0
-TotalCostRaised = 0
+
+Number_of_Panels, panelprice, panelwattage = 0, 0, 0
+
+TotalCostNormal, TotalCostRaised, TotalCostNormalNNI, TotalCostRaisedNNI = 0, 0, 0, 0
+
 UniqueID = 0
 serialNumber = 0
+
 valueinwords = ""
 
-generalrow = 0
-generalrowentry = 1
+generalrow, generalrowentry, referredrow, referredrowentry, inverterrow, inverterrowentry = 0, 1, 2, 3, 4, 5
 
-referredrow = 2
-referredrowentry=3
+panelrow, panelrowentry, pvrow, pvrowentry = 6, 7, 8, 9
 
-inverterrow = 4
-inverterrowentry = 5
-
-panelrow = 6
-panelrowentry=7
-
-pvrow = 8
-pvrowentry = 9
-
-cinrow = 8
-cinrowentry = 9
+cinrow,cinrowentry = 8,9
 
 def getSerialNumber(*args):
     global serialNumber
@@ -68,37 +59,38 @@ def enter_data():
             Inverter_TYP = inverter_type_combobox.get()
             Inverter_Name = inverter_name_combobox.get()
             Inverter_Watt = inverter_wattage_combobox.get()
-
             if Inverter_TYP and Inverter_Name and Inverter_Watt:
                 Name_of_Panels = panel_name_combobox.get()
-                Number_of_Panels = number_of_panels_spinbox.get()
-                if Name_of_Panels and Number_of_Panels:
-                    # Course info
-                    Structure_Type = structure_type_combobox.get()
-                    pv_balance = pv_balance_combobox.get()
-                    if Structure_Type and pv_balance:
-                        Carriage_Cost = carriage_entry.get()
-                        Installation = installation_entry.get()
-                        Net_Metering = net_metering_entry.get()
-                        if Carriage_Cost and Installation and Net_Metering:
-                            print("System Size: ", SystemSize, "Client Name: ", ClientName, "Client Location: ", ClientLocation)
-                            print("Reffered by: ", ReferredBy, "Inverter Type: ", Inverter_TYP, "Inverter Name: ", Inverter_Name)
-                            print("Inverter Wattage ", Inverter_Watt, "Panel Name: ", Name_of_Panels, "Panel Price: ", panelprice)
-                            print("No of Panels: ", Number_of_Panels, "Structure Type: ", Structure_Type)
-                            print("PV Balance: ", pv_balance, "Carriage: ", Carriage_Cost, "Installation Cost: ", Installation)
-                            print("Net Metering: ", Net_Metering, "Template File", template_file, "Inverter Price", InverterPrice)
-                            print("Total Cost Normal: ",TotalCostNormal,"Total Cost Raised: ",TotalCostRaised, "Unique ID: ", UniqueID)
-                            print("------------------------------------------")
+                # Course info
+                Structure_Type = structure_type_combobox.get()
+                pv_balance = pv_balance_combobox.get()
+                if Structure_Type and pv_balance:
+                    Carriage_Cost = carriage_entry.get()
+                    Installation = installation_entry.get()
+                    Net_Metering = net_metering_entry.get()
+                    if Carriage_Cost and Installation and Net_Metering:
+                        print("System Size: ", SystemSize, "Client Name: ", ClientName, "Client Location: ", ClientLocation)
+                        print("Reffered by: ", ReferredBy, "Inverter Type: ", Inverter_TYP, "Inverter Name: ", Inverter_Name)
+                        print("Inverter Wattage ", Inverter_Watt, "Panel Name: ", Name_of_Panels, "Panel Price: ", panelprice)
+                        print("No of Panels: ", Number_of_Panels, "Structure Type: ", Structure_Type)
+                        print("PV Balance: ", pv_balance, "Carriage: ", Carriage_Cost, "Installation Cost: ", Installation)
+                        print("Net Metering: ", Net_Metering, "Template File", template_file, "Inverter Price", InverterPrice)
+                        print("Total Cost Normal: ",TotalCostNormal,"Total Cost Raised: ",TotalCostRaised, "Unique ID: ", UniqueID)
+                        print("------------------------------------------")
 
-                            record_data(SystemSize,UniqueID,ClientName, ClientLocation, ReferredBy, Inverter_TYP, Inverter_Name, Inverter_Watt, Name_of_Panels, panelprice,Number_of_Panels, Structure_Type, pv_balance, Carriage_Cost, Installation,Net_Metering, template_file, InverterPrice,TotalCostNormal,TotalCostRaised)
+                        document_creater(UniqueID, ClientName, SystemSize, Inverter_Watt, Number_of_Panels,
+                                         Net_Metering, template_file, TotalCostNormal, TotalCostRaised, TotalCostNormalNNI, TotalCostRaisedNNI, valueinwords)
+                        filename = str(UniqueID) + str(ClientName) + "_Quotation"
+                        tradeMarkRemover(filename)
 
-                            document_creater(SystemSize, Inverter_Watt, Number_of_Panels,Net_Metering, template_file, TotalCostNormal, TotalCostRaised, valueinwords)
-                        else:
-                            tkinter.messagebox.showwarning(title="Error", message="Enter Carriage, Installation and Net Metering Cost")
+                        record_data(SystemSize, UniqueID, ClientName, ClientLocation, ReferredBy, Inverter_TYP,
+                                    Inverter_Name, Inverter_Watt, Name_of_Panels, panelprice, Number_of_Panels,
+                                    Structure_Type, pv_balance, Carriage_Cost, Installation, Net_Metering,
+                                    template_file, InverterPrice, TotalCostRaised, TotalCostNormal)
                     else:
-                        tkinter.messagebox.showwarning(title="Error", message="Enter Structure Type and PV Balance.")
+                        tkinter.messagebox.showwarning(title="Error", message="Enter Carriage, Installation and Net Metering Cost")
                 else:
-                    tkinter.messagebox.showwarning(title="Error", message="Fill all box of Solar Panels.")
+                    tkinter.messagebox.showwarning(title="Error", message="Enter Structure Type and PV Balance.")
             else:
                 tkinter.messagebox.showwarning(title="Error", message="Enter All box of Inverters.")
         else:
@@ -109,17 +101,27 @@ def enter_data():
 #This updates the template which is going to be subsituited the placeholder into GTGN Grid Tied General Normal
 
 def total_cost_calculator(*args):
-    global TotalCostNormal
-    global TotalCostRaised
+    global TotalCostNormal,TotalCostRaised,TotalCostNormalNNI,TotalCostRaisedNNI
     Structure_Type = structure_type_combobox.get()
-    Number_of_Panels = number_of_panels_spinbox.get()
     pv_balance = pv_balance_combobox.get()
     Carriage_Cost = carriage_entry.get()
     Installation = installation_entry.get()
     Net_Metering = net_metering_entry.get()
-    TotalCostNormal = int(InverterPrice)+(20*int(Number_of_Panels)*int(panelwattage))+(int(panelwattage)*int(panelprice)*int(Number_of_Panels))+int(pv_balance)+int(Carriage_Cost)+int(Installation)+int(Net_Metering)
-    TotalCostRaised = int(InverterPrice) + (6500*(int(Number_of_Panels)/2)) + (int(panelwattage) * int(panelprice) * int(Number_of_Panels)) + int(pv_balance) + int(Carriage_Cost) + int(Installation) + int(Net_Metering)
+    TotalCostRaised = (int(InverterPrice)+(20*int(Number_of_Panels)*int(panelwattage))+
+                       (int(panelwattage)*int(panelprice)*int(Number_of_Panels))+
+                       int(pv_balance)+int(Carriage_Cost)+int(Installation)+int(Net_Metering))
 
+    TotalCostNormal = (int(InverterPrice) + int((6500*(int(Number_of_Panels)/2)))+
+                       (int(panelwattage) * int(panelprice) * int(Number_of_Panels))+
+                       int(pv_balance) + int(Carriage_Cost) + int(Installation) + int(Net_Metering))
+
+    TotalCostRaisedNNI = (int(InverterPrice) + (20 * int(Number_of_Panels) * int(panelwattage))+
+                       (int(panelwattage) * int(panelprice) * int(Number_of_Panels)) + int(pv_balance)+
+                       int(Carriage_Cost) + int(Installation))
+
+    TotalCostNormalNNI = (int(InverterPrice) + int((6500 * (int(Number_of_Panels) / 2))) +
+                       (int(panelwattage) * int(panelprice) * int(Number_of_Panels)) +
+                       int(pv_balance) + int(Carriage_Cost) + int(Installation))
 def convert_to_words(number):
     p = inflect.engine()
     words = p.number_to_words(number)
@@ -169,8 +171,8 @@ def inverter_selection(*args):
         Inverter_name = Grid_Tie_Inverter_Names.copy()
     else:
         if inverter_type_combobox.get() == "Hybrid":
-            as_label = tkinter.Label(user_info_frame, text="Inverter Type")
-            as_combobox = ttk.Combobox(user_info_frame, values=["Grid Tie", "Hybrid"])
+            as_label = tkinter.Label(text="Inverter Type")
+            as_combobox = ttk.Combobox(values=["Grid Tie", "Hybrid"])
             as_label.grid(row=10, column=0)
             as_combobox.grid(row=11, column=0)
         Inverter_name = Hybrid_Inverter_Names.copy()
@@ -187,6 +189,15 @@ def update_panel(*args):
     PanelWattageInt = int(panelwattage)
     No_of_panels = int(System_Size_combobox.get())/PanelWattageInt
     print(panelwattage)
+    Panels_Numbers(panelwattage)
+
+
+def Panels_Numbers(panelwattage):
+    global Number_of_Panels
+    SZ = int(System_Size_combobox.get()) * 1000
+    Number_of_Panels = SZ / int(panelwattage)
+    Number_of_Panels = math.ceil(Number_of_Panels)
+    print(Number_of_Panels)
 
 def inverter_wattage_selection(*args):
     inverter_wattage_combobox.set('')
@@ -276,8 +287,6 @@ inverter_type_combobox.grid(row=inverterrowentry, column=0)
 
 sel.trace('w',inverter_selection)
 
-
-
 inverter_name_label = tkinter.Label(user_info_frame, text="Inverter Name")
 inverter_name_combobox = ttk.Combobox(user_info_frame, values=Inverter_name,textvariable=sel3)
 inverter_name_label.grid(row=inverterrow, column=1)
@@ -299,11 +308,6 @@ panel_name_combobox.grid(row=panelrowentry, column=0)
 
 sel5.trace('w',inverter_price)
 sel2.trace('w',update_panel)
-
-number_of_panels_label = tkinter.Label(user_info_frame, text="No. of Panels")
-number_of_panels_spinbox = tkinter.Spinbox(user_info_frame, from_=0, to=1000)
-number_of_panels_label.grid(row=panelrow, column=1)
-number_of_panels_spinbox.grid(row=panelrowentry, column=1)
 
 structure_type = tkinter.Label(user_info_frame, text="Structure Type")
 structure_type_combobox = ttk.Combobox(user_info_frame, values=["Normal", "Raised"], textvariable=sel4)
@@ -348,8 +352,7 @@ terms_frame = tkinter.LabelFrame(frame, text="Terms & Conditions")
 terms_frame.grid(row=2, column=0, sticky="news", padx=20, pady=10)
 
 accept_var = tkinter.StringVar(value="Not Accepted")
-terms_check = tkinter.Checkbutton(terms_frame, text="I accept the terms and conditions.", variable=accept_var,
-                                      onvalue="Accepted", offvalue="Not Accepted")
+terms_check = tkinter.Checkbutton(terms_frame, text="I accept the terms and conditions.", variable=accept_var, onvalue="Accepted", offvalue="Not Accepted")
 terms_check.grid(row=0, column=0)
 
 # Button

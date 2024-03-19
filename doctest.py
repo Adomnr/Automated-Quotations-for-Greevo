@@ -1,7 +1,6 @@
 from spire.doc import *
-from spire.doc.common import *
 
-def document_creater(SystemSize,Inverter_Watt, Number_of_Panels, Net_Metering, template_file, TotalCostNormal, TotalCostRaised, valueinwords):
+def document_creater(UniqueID, ClientName, SystemSize, Inverter_Watt, Number_of_Panels, Net_Metering, template_file, TotalCostNormal, TotalCostRaised, TotalCostNormalNNI, TotalCostRaisedNNI, valueinwords):
     # Create a Document object
     document = Document()
 
@@ -11,6 +10,7 @@ def document_creater(SystemSize,Inverter_Watt, Number_of_Panels, Net_Metering, t
 
     # Store the placeholders and new strings in a dictionary
     dictionary = {
+                    '[uid]': str(UniqueID),
                     '[sw]': str(SystemSize),
                     '[nop]': str(Number_of_Panels),
                     '[nos]': str(NOS),
@@ -19,6 +19,8 @@ def document_creater(SystemSize,Inverter_Watt, Number_of_Panels, Net_Metering, t
                     '[iwy]': '5',
                     '[calculated_price]':str(TotalCostRaised),
                     '[calculated_price_normal]':str(TotalCostNormal),
+                    '[calculated_price_NNI]': str(TotalCostRaisedNNI),
+                    '[calculated_price_normal_NNI]': str(TotalCostNormalNNI),
                     '[value_in_words]':str(valueinwords),
                     '[bp]':'180,000',
                     '[bv]':'4',
@@ -30,7 +32,11 @@ def document_creater(SystemSize,Inverter_Watt, Number_of_Panels, Net_Metering, t
         # Replace a placeholder (key) with a new string (value)
         document.Replace(key, value, False, True)
 
+    filename = str(UniqueID)+str(ClientName)+ "_Quotation"
+    print(filename)
+    savename = "output/"+filename+".docx"
+
 
     # Save the resulting document
-    document.SaveToFile("output/ReplacePlaceholder.docx", FileFormat.Docx2016)
+    document.SaveToFile(savename, FileFormat.Docx2016)
     document.Close()
