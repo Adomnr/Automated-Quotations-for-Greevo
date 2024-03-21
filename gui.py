@@ -28,7 +28,8 @@ valueinwords = ""
 
 generalrow, generalrowentry, referredrow, referredrowentry, inverterrow, inverterrowentry = 0, 1, 2, 3, 4, 5
 
-panelrow, panelrowentry, pvrow, pvrowentry = 6, 7, 8, 9
+panelrow, panelrowentry, pvrow, pvrowentry, batteryrow, batteryentryrow,templaterow, templaterowntry = 6, 7, 6, 7, 10, 11, 8, 9
+
 
 cinrow,cinrowentry = 8,9
 
@@ -79,14 +80,16 @@ def enter_data():
                         print("------------------------------------------")
 
                         document_creater(UniqueID, ClientName, SystemSize, Inverter_Watt, Number_of_Panels,
-                                         Net_Metering, template_file, TotalCostNormal, TotalCostRaised, TotalCostNormalNNI, TotalCostRaisedNNI, valueinwords)
-                        filename = str(UniqueID) + str(ClientName) + "_Quotation"
+                                         Net_Metering, template_file, TotalCostNormal, TotalCostRaised,
+                                         TotalCostNormalNNI, TotalCostRaisedNNI, valueinwords)
+
+                        filename = str(SystemSize)+"kW "+str(ClientName)+ "_Quotation"+ str(UniqueID)
                         tradeMarkRemover(filename)
 
                         record_data(SystemSize, UniqueID, ClientName, ClientLocation, ReferredBy, Inverter_TYP,
                                     Inverter_Name, Inverter_Watt, Name_of_Panels, panelprice, Number_of_Panels,
                                     Structure_Type, pv_balance, Carriage_Cost, Installation, Net_Metering,
-                                    template_file, InverterPrice, TotalCostRaised, TotalCostNormal)
+                                    template_file, InverterPrice, TotalCostNormal, TotalCostRaised, TotalCostNormalNNI,TotalCostRaisedNNI)
                     else:
                         tkinter.messagebox.showwarning(title="Error", message="Enter Carriage, Installation and Net Metering Cost")
                 else:
@@ -139,7 +142,7 @@ def generate_unique_id():
 
     return unique_id
 
-def record_data(SystemSize,UniqueID,ClientName, ClientLocation, ReferredBy, Inverter_TYP, Inverter_Name, Inverter_Watt, Name_of_Panels, panelprice,Number_of_Panels, Structure_Type, pv_balance, Carriage_Cost, Installation,Net_Metering, template_file, InverterPrice,TotalCostNormal,TotalCostRaised):
+def record_data(SystemSize,UniqueID,ClientName, ClientLocation, ReferredBy, Inverter_TYP, Inverter_Name, Inverter_Watt, Name_of_Panels, panelprice,Number_of_Panels, Structure_Type, pv_balance, Carriage_Cost, Installation,Net_Metering, template_file, InverterPrice,TotalCostNormal,TotalCostRaised,TotalCostNormalNNI, TotalCostRaisedNNI):
     serial_list = []
     current_date_time = datetime.now()
     current_date_time = str(current_date_time)
@@ -148,8 +151,10 @@ def record_data(SystemSize,UniqueID,ClientName, ClientLocation, ReferredBy, Inve
     SerialNumber = int(serial_list[-1]) + 1
     if SerialNumber == 0:
         SerialNumber = 1
-    Customer_Data_Sheet.append_row([SerialNumber,current_date_time,UniqueID,SystemSize, ClientName,ClientLocation, ReferredBy, Inverter_TYP, Inverter_Name,Inverter_Watt, Name_of_Panels, panelprice, Number_of_Panels,Structure_Type, pv_balance, Carriage_Cost, Installation,Net_Metering,InverterPrice,TotalCostNormal,TotalCostRaised])
-
+    Customer_Data_Sheet.append_row([SerialNumber,current_date_time,UniqueID,SystemSize, ClientName,ClientLocation,
+                                    ReferredBy, Inverter_TYP, Inverter_Name,Inverter_Watt, Name_of_Panels, panelprice,
+                                    Number_of_Panels,Structure_Type, pv_balance, Carriage_Cost, Installation,Net_Metering,
+                                    InverterPrice,TotalCostNormal,TotalCostRaised, TotalCostNormalNNI, TotalCostRaisedNNI])
 def update_template_type(*args):
     global template_file
     if inverter_type_combobox.get() == "Grid Tie":
@@ -164,17 +169,11 @@ def update_template_type(*args):
 
 
 def inverter_selection(*args):
-
     inverter_name_combobox.set('')
     inverter_wattage_combobox.set('')
     if inverter_type_combobox.get() == "Grid Tie":
         Inverter_name = Grid_Tie_Inverter_Names.copy()
     else:
-        if inverter_type_combobox.get() == "Hybrid":
-            as_label = tkinter.Label(text="Inverter Type")
-            as_combobox = ttk.Combobox(values=["Grid Tie", "Hybrid"])
-            as_label.grid(row=10, column=0)
-            as_combobox.grid(row=11, column=0)
         Inverter_name = Hybrid_Inverter_Names.copy()
     inverter_name_combobox['values'] = Inverter_name
 
@@ -243,6 +242,15 @@ def inverter_price(*args):
         InverterPrice = list[index2]
         print(InverterPrice)
 
+
+def update_noi(*args):
+    if int(Number_of_Inverters_Entry.get()) == 1:
+        pass
+    else:
+        if int(Number_of_Inverters_Entry.get()) == 2:
+            pass
+
+
 #Inverter_name,name_of_solar_panels,wattage_of_solar_panels
 
 window = tkinter.Tk()
@@ -271,9 +279,19 @@ Client_Location_label.grid(row=generalrow, column=2)
 Client_Location_combobox.grid(row=generalrowentry, column=2)
 
 Reffered_label = tkinter.Label(user_info_frame, text="Reference By")
-Reffered_combobox = ttk.Combobox(user_info_frame, values=["Madam Rafia", "Engr Sajjad", "Engr Shaban", "Engr Abid", "Engr Ammar", "Engr Ammar Butt","Engr Ubaid", "Sir Nabeel"])
-Reffered_label.grid(row=referredrow, column=1)
-Reffered_combobox.grid(row=referredrowentry, column=1)
+Reffered_combobox = ttk.Combobox(user_info_frame, values=["Madam Rafia", "Engr Sajjad", "Engr Shaban", "Engr Abid", "Engr Ammar Butt","Engr Ubaid", "Sir Nabeel"])
+Reffered_label.grid(row=referredrow, column=0)
+Reffered_combobox.grid(row=referredrowentry, column=0)
+
+Number_of_Inverters_Label = tkinter.Label(user_info_frame, text="Number of Inverters")
+Number_of_Inverters_Entry = ttk.Entry(user_info_frame)
+Number_of_Inverters_Label.grid(row=referredrow, column=1)
+Number_of_Inverters_Entry.grid(row=referredrowentry, column=1)
+
+Inverter_Brands_label = tkinter.Label(user_info_frame, text="No of Inverter Brands")
+Inverter_Brands_combobox = ttk.Combobox(user_info_frame, values=['1','2','3'])
+Inverter_Brands_label.grid(row=referredrow, column=2)
+Inverter_Brands_combobox.grid(row=referredrowentry, column=2)
 
 sel = tkinter.StringVar(user_info_frame)
 sel3 = tkinter.StringVar(user_info_frame)
@@ -300,7 +318,6 @@ inverter_wattage_combobox.grid(row=inverterrowentry, column=2)
 sel3.trace('w',inverter_wattage_selection)
 sel2 = tkinter.StringVar(user_info_frame)
 
-
 panel_name_label = tkinter.Label(user_info_frame, text="Panel Name")
 panel_name_combobox = ttk.Combobox(user_info_frame, values=Solar_Panels_Names, textvariable=sel2)
 panel_name_label.grid(row=panelrow, column=0)
@@ -321,6 +338,27 @@ pv_balance_label.grid(row=pvrow, column=1)
 pv_balance_combobox.grid(row=pvrowentry, column=1)
 
 sel4.trace('w',update_template_type)
+
+Battery_Name_Label = tkinter.Label(user_info_frame, text="Battery Name")
+Battery_Name_Entry = ttk.Entry(user_info_frame)
+Battery_Name_Label.grid(row = batteryrow, column=0)
+Battery_Name_Entry.grid(row=batteryentryrow, column=0)
+
+Battery_Price_Label = tkinter.Label(user_info_frame, text="Battery Price")
+Battery_Price_Entry = ttk.Entry(user_info_frame)
+Battery_Price_Label.grid(row=batteryrow, column=1)
+Battery_Price_Entry.grid(row=batteryentryrow, column=1)
+
+Number_of_Batteries_Label = tkinter.Label(user_info_frame, text="Number of Batteries")
+Number_of_Batteries_Entry = ttk.Entry(user_info_frame)
+Number_of_Batteries_Label.grid(row=batteryrow, column=2)
+Number_of_Batteries_Entry.grid(row=batteryentryrow, column=2)
+
+structure_type = tkinter.Label(user_info_frame, text="Structure Type")
+structure_type_combobox = ttk.Combobox(user_info_frame, values=["General", "Specific Brand","Net Metering Not Included",])
+structure_type.grid(row=templaterow, column=2)
+structure_type_combobox.grid(row=templaterowentry, column=2)
+
 
 for widget in user_info_frame.winfo_children():
     widget.grid_configure(padx=10, pady=5)
@@ -344,6 +382,8 @@ net_metering_entry = ttk.Entry(courses_frame)
 net_metering.grid(row=cinrow, column=2)
 net_metering_entry.grid(row=cinrowentry, column=2)
 
+
+
 for widget in courses_frame.winfo_children():
     widget.grid_configure(padx=10, pady=5)
 
@@ -352,7 +392,7 @@ terms_frame = tkinter.LabelFrame(frame, text="Terms & Conditions")
 terms_frame.grid(row=2, column=0, sticky="news", padx=20, pady=10)
 
 accept_var = tkinter.StringVar(value="Not Accepted")
-terms_check = tkinter.Checkbutton(terms_frame, text="I accept the terms and conditions.", variable=accept_var, onvalue="Accepted", offvalue="Not Accepted")
+terms_check = tkinter.Checkbutton(terms_frame, text="Checked All.", variable=accept_var, onvalue="Accepted", offvalue="Not Accepted")
 terms_check.grid(row=0, column=0)
 
 # Button
