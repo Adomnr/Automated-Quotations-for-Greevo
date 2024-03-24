@@ -11,6 +11,7 @@ import uuid
 import time
 from trademarkremover import *
 import math
+from pathlib import Path
 
 Inverter_name, Inverter_wattage, Inverter2_name, Inverter2_wattage, Inverter3_name, Inverter3_wattage = [], [], [], [], [], []
 
@@ -156,15 +157,75 @@ def record_data(SystemSize,UniqueID,ClientName, ClientLocation, ReferredBy, Inve
                                     InverterPrice, TotalCostNormal, TotalCostRaised, TotalCostNormalNNI, TotalCostRaisedNNI])
 
 def update_template_type(*args):
+    home_dir = Path.home()
+    print(home_dir)
+
     global template_file
-    if inverter_type_combobox.get() == "Grid Tie":
-        template_file = ".\\Templates\\GTGN_Template.docx"
-        if structure_type_combobox.get() == "Raised":
-            template_file = ".\\Templates\\GTGR_Template.docx"
-    elif inverter_type_combobox.get() == "Hybrid":
-        template_file = ".\\Templates\\HGN_Template.docx"
-        if structure_type_combobox.get() == "Raised":
-            template_file = ".\\Templates\\HGR_Template.docx"
+    if inverter_selection_combobox.get() == "1":
+        if inverter_type_combobox.get() == "Grid Tie":
+            if structure_type_combobox.get() == "Normal":
+                if Quotation_type_combobox.get() == "General":
+                    template_file = ".\\Templates\\GridTieInverters\\GridTieNormal\\GridTieNormalNetMeteringIncluded\\GTGN_Template.docx"
+                if Quotation_type_combobox.get() == "Net Metering Not Included":
+                    template_file = ".\\Templates\\GridTieInverters\\GridTieNormal\\GridTieNormalNetMeteringNotIncluded\\GTGNNI_Template.docx"
+                if Quotation_type_combobox.get() == "Specify Brand Net Metering Included":
+                    template_file = ".\\Templates\\GridTieInverters\\GridTieNormal\\GridTieNormalNetMeteringIncluded\\GTGNSPI_Template.docx"
+                if Quotation_type_combobox.get() == "Specify Brand Net Metering Not Included":
+                    template_file = ".\\Templates\\GridTieInverters\\GridTieNormal\\GridTieNormalNetMeteringNotIncluded\\GTGNNISPI_Template.docx"
+            if structure_type_combobox.get() == "Raised":
+                if Quotation_type_combobox.get() == "General":
+                    template_file = ".\\Templates\\GridTieInverters\\GridTieNormal\\GridTieNormalNetMeteringIncluded\\GTGR_Template.docx"
+                if Quotation_type_combobox.get() == "Net Metering Not Included":
+                    template_file = ".\\Templates\\GridTieInverters\\GridTieNormal\\GridTieNormalNetMeteringNotIncluded\\GTGRNI_Template.docx"
+                if Quotation_type_combobox.get() == "Specify Brand Net Metering Included":
+                    template_file = ".\\Templates\\GridTieInverters\\GridTieNormal\\GridTieNormalNetMeteringIncluded\\GTGRSPI_Template.docx"
+                if Quotation_type_combobox.get() == "Specify Brand Net Metering Not Included":
+                    template_file = ".\\Templates\\GridTieInverters\\GridTieNormal\\GridTieNormalNetMeteringNotIncluded\\GTGRNISPI_Template.docx"
+        if inverter_type_combobox.get() == "Hybrid":
+            if structure_type_combobox.get() == "Normal":
+                if Quotation_type_combobox.get() == "General":
+                    template_file = ".\\Templates\\HybridInverters\\HybridNormal\\HybridNormalNetMeteringIncluded\\HGN_Template.docx"
+                if Quotation_type_combobox.get() == "Net Metering Not Included":
+                    template_file = ".\\Templates\\HybridInverters\\HybridNormal\\HybridNormalNetMeteringNotIncluded\\HGNNI_Template.docx"
+                if Quotation_type_combobox.get() == "Specify Brand Net Metering Included":
+                    template_file = ".\\Templates\\HybridInverters\\HybridNormal\\HybridNormalNetMeteringIncluded\\HGNSPI_Template.docx"
+                if Quotation_type_combobox.get() == "Specify Brand Net Metering Not Included":
+                    template_file = ".\\Templates\\HybridInverters\\HybridNormal\\HybridNormalNetMeteringNotIncluded\\HGNNISPI_Template.docx"
+            if structure_type_combobox.get() == "Raised":
+                if Quotation_type_combobox.get() == "General":
+                    template_file = ".\\Templates\\HybridInverters\\HybridRaised\\HybridRaisedNetMeteringIncluded\\HGR_Template.docx"
+                if Quotation_type_combobox.get() == "Net Metering Not Included":
+                    template_file = ".\\Templates\\HybridInverters\\HybridRaised\\HybridRaisedNetMeteringNotIncluded\\HGRNI_Template.docx"
+                if Quotation_type_combobox.get() == "Specify Brand Net Metering Included":
+                    template_file = ".\\Templates\\HybridInverters\\HybridRaised\\HybridRaisedNetMeteringIncluded\\HGRSPI_Template.docx"
+                if Quotation_type_combobox.get() == "Specify Brand Net Metering Not Included":
+                    template_file = ".\\Templates\\HybridInverters\\HybridRaised\\HybridRaisedNetMeteringNotIncluded\\HGRNISPI_Template.docx"
+    if inverter_selection_combobox.get() == "2":
+        if inverter_type_combobox.get() == "Grid Tie" and inverter2_type_combobox.get() == "Hybrid":
+            if structure_type_combobox.get() == "Normal":
+                if Quotation_type_combobox.get() == "General":
+                    template_file = ".\\Templates\\GridTieInverters\\GridTieNormal\\GridTieNormalNetMeteringIncluded\\GTGN_WHI_Template.docx"
+                if Quotation_type_combobox.get() == "Net Metering Not Included":
+                    template_file = ".\\Templates\\GridTieInverters\\GridTieNormal\\GridTieNormalNetMeteringNotIncluded\\GTGNNI_WHI_Template.docx"
+                if Quotation_type_combobox.get() == "Specify Brand Net Metering Included":
+                    template_file = ".\\Templates\\GridTieInverters\\GridTieNormal\\GridTieNormalNetMeteringIncluded\\GTGNSPI_WHI_Template.docx"
+                if Quotation_type_combobox.get() == "Specify Brand Net Metering Not Included":
+                    template_file = ".\\Templates\\GridTieInverters\\GridTieNormal\\GridTieNormalNetMeteringNotIncluded\\GTGNNISPI_WHI_Template.docx"
+            if structure_type_combobox.get() == "Raised":
+                if Quotation_type_combobox.get() == "General":
+                    template_file = ".\\Templates\\GridTieInverters\\GridTieRaised\\GridTieRaisedNetMeteringIncluded\\GTGR_WHI_Template.docx"
+                if Quotation_type_combobox.get() == "Net Metering Not Included":
+                    template_file = ".\\Templates\\GridTieInverters\\GridTieRaised\\GridTieRaisedNetMeteringNotIncluded\\GTGRNI_WHI_Template.docx"
+                if Quotation_type_combobox.get() == "Specify Brand Net Metering Included":
+                    template_file = ".\\Templates\\GridTieInverters\\GridTieRaised\\GridTieRaisedNetMeteringIncluded\\GTGRSPI_WHI_Template.docx"
+                if Quotation_type_combobox.get() == "Specify Brand Net Metering Not Included":
+                    template_file = ".\\Templates\\GridTieInverters\\GridTieRaised\\GridTieRaisedNetMeteringNotIncluded\\GTGRNISPI_WHI_Template.docx"
+        if inverter_type_combobox.get() == "Hybrid" and inverter2_type_combobox.get() == "Grid Tie":
+            if structure_type_combobox.get() == "Normal":
+                if Quotation_type_combobox.get() == "General":
+                    template_file = ".\\Templates\\HybridInverters\\HybridNormal\\HybridNormalNetMeteringIncluded\\HGN_WHI_Template.docx"
+                if Quotation_type_combobox.get() == "Net Metering Not Included":
+                    template_file = ".\\Templates\\HybridInverters\\HybridNormal\\HybridNormalNetMeteringNotIncluded\\H"
     print(template_file)
 
 
@@ -352,7 +413,6 @@ def inverter3_price(*args):
         print(Inverter3Price)
 
 def inverter_number_selection(*args):
-    print("here")
     if inverter_selection_combobox.get() == '1':
         inverter2_frame.grid_remove()
         inverter3_frame.grid_remove()
@@ -555,7 +615,7 @@ pv_balance_combobox.grid(row=panelrowentry, column=1, padx=5)
 sel4.trace('w', update_template_type)
 
 Quotation_type = tkinter.Label(panel_frame, text="Quotation Type")
-Quotation_type_combobox = ttk.Combobox(panel_frame, values=["General", "Specify Brand", "Net Metering Not Included"])
+Quotation_type_combobox = ttk.Combobox(panel_frame, values=["General Net Metering Included", "Specify Brand Net Metering Included", "General Net Metering Not Included", "Specify Brand Net Metering Not Included"])
 Quotation_type.grid(row=panelrow, column=3, padx=5)
 Quotation_type_combobox.grid(row=panelrowentry, column=3, padx=5)
 
