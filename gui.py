@@ -26,9 +26,9 @@ serialNumber = 0
 
 valueinwords = ""
 
-generalrow, generalrowentry, referredrow, referredrowentry, inverterrow, inverterrowentry, inverter2row, inverter2rowentry = 0, 1, 2, 3, 4, 5, 6, 7
+generalrow, generalrowentry, inverterrow, inverterrowentry, inverter2row, inverter2rowentry = 0, 1, 2, 3, 4, 5
 
-panelrow, panelrowentry, pvrow, pvrowentry, batteryrow, batteryentryrow,templaterow, templaterowentry = 8, 9, 8, 9, 12, 13, 10, 11
+panelrow, panelrowentry, pvrow, pvrowentry, batteryrow, batteryentryrow,templaterow, templaterowentry = 6, 7, 6, 7, 10, 11, 8, 9
 
 cinrow, cinrowentry = 8, 9
 
@@ -322,10 +322,10 @@ Client_Location_combobox = ttk.Entry(user_info_frame)
 Client_Location_label.grid(row=generalrow, column=2)
 Client_Location_combobox.grid(row=generalrowentry, column=2)
 
-Reffered_label = tkinter.Label(user_info_frame, text="Reference By")
-Reffered_combobox = ttk.Combobox(user_info_frame, values=["Madam Rafia", "Engr Sajjad", "Engr Shaban", "Engr Abid", "Engr Ammar Butt","Engr Ubaid", "Sir Nabeel"])
-Reffered_label.grid(row=referredrow, column=1)
-Reffered_combobox.grid(row=referredrowentry, column=1)
+Reffered_label = tkinter.Label(user_info_frame, text="Referred By")
+Reffered_combobox = ttk.Combobox(user_info_frame, values=["Madam Rafia", "Engr Sajjad", "Engr Shaban", "Engr Abid", "Engr Ammar Butt","Engr Ubaid", "Sir Nabeel","Engr Osama"])
+Reffered_label.grid(row=generalrow, column=3)
+Reffered_combobox.grid(row=generalrowentry, column=3)
 
 sel = tkinter.StringVar(user_info_frame)
 sel3 = tkinter.StringVar(user_info_frame)
@@ -479,6 +479,15 @@ net_metering_entry.grid(row=cinrowentry, column=2)
 
 if net_metering_entry.get() == "":
     net_metering_entry.insert(0,'0')
+
+
+foundation_work = tkinter.Label(courses_frame, text="Foundation Work")
+foundation_work_entry = ttk.Entry(courses_frame)
+foundation_work.grid(row=cinrow, column=3)
+foundation_work_entry.grid(row=cinrowentry, column=3)
+
+if foundation_work_entry.get() == "":
+    foundation_work_entry.insert(0,"0")
 
 for widget in courses_frame.winfo_children():
     widget.grid_configure(padx=10, pady=5)
