@@ -1,6 +1,9 @@
 from spire.doc import *
 
-def document_creater(UniqueID, ClientName, SystemSize, Inverter_Watt, Number_of_Panels, Net_Metering, template_file, TotalCostNormal, TotalCostRaised, TotalCostNormalNNI, TotalCostRaisedNNI, valueinwords):
+from trademarkremover import tradeMarkRemover
+
+
+def document_creater(UniqueID, ClientName, ClientLocation, SystemSize, Inverter_TYP, Inverter_Watt, Inverter2_Watt, Number_of_Panels, Net_Metering, template_file, TotalCostNormal, TotalCostRaised, TotalCostNormalNNI, TotalCostRaisedNNI, valueinwords, Inverter_Name, Inverter2_Name, Name_of_Panels, BatteryPrice, BatteryName, BatteryPieces, Number_of_Inverters, panelwattage,Carriage_Cost, Installation, Foundation):
     # Create a Document object
     document = Document()
 
@@ -8,10 +11,45 @@ def document_creater(UniqueID, ClientName, SystemSize, Inverter_Watt, Number_of_
     document.LoadFromFile(template_file)
     NOS = int(int(Number_of_Panels)/2)
 
+    batteryprice = int(BatteryPrice) * int(BatteryPieces)
+
+    panelname = Name_of_Panels[:5-6]
+
     TCN = ('{:,}'.format(int(TotalCostNormal)))
     TCR = ('{:,}'.format(int(TotalCostRaised)))
     TCNNI = ('{:,}'.format(int(TotalCostNormalNNI)))
     TCRNI = ('{:,}'.format(int(TotalCostRaisedNNI)))
+
+    net_metering_symbol = ""
+
+    if int(Net_Metering) == 0:
+        net_metering_symbol = "N/A"
+    else:
+        net_metering_symbol = "01 Job"
+
+    inverter_warranty_year = ""
+
+    if str(Inverter_Name) == "FoxESS":
+        inverter_warranty_year = "10 years replacement"
+    else:
+        inverter_warranty_year = "5 years"
+
+    carriage_symbol = ""
+    if int(Carriage_Cost) == 0:
+        carriage_symbol = "N/A"
+    else:
+        carriage_symbol = "01 Job"
+
+    foundation_symbol = ""
+    if int(Foundation) == 0:
+        foundation_symbol = "N/A"
+    else:
+        foundation_symbol = "01 Job"
+
+    if batteryprice == 0:
+        str(batteryprice)
+        batteryprice = "N/A"
+
 
 
     # Store the placeholders and new strings in a dictionary
@@ -20,21 +58,25 @@ def document_creater(UniqueID, ClientName, SystemSize, Inverter_Watt, Number_of_
                     '[sw]': str(SystemSize),
                     '[nop]': str(Number_of_Panels),
                     '[nos]': str(NOS),
-                    '[noi]': '1',
+                    '[noi]': str(Number_of_Inverters),
                     '[iw]': str(Inverter_Watt),
-                    '[iwy]': '5',
-                    '[calculated_price]':str(TCR),
-                    '[calculated_price_normal]':str(TCN),
+                    '[iwy]': str(inverter_warranty_year),
+                    '[calculated_price]': str(TCR),
+                    '[calculated_price_normal]': str(TCN),
                     '[calculated_price_NNI]': str(TCRNI),
                     '[calculated_price_normal_NNI]': str(TCNNI),
-                    '[value_in_words]':str(valueinwords),
-                    '[bp]':'180,000',
-                    '[bv]':'4',
+                    '[value_in_words]': str(valueinwords),
+                    '[bn]': str(BatteryName),
+                    '[bp]': str(batteryprice),
+                    '[bv]': str(BatteryPieces),
                     '[nmc]': str(Net_Metering),
-                    '[pn]' : "Panel Name",
-                    '[pw]' : "Panel Wattage",
-                    '[in]' : "Inverter Name",
-                    '[in2]' : "Inverter Name 2"
+                    '[nms]': str(net_metering_symbol),
+                    '[pn]': panelname,
+                    '[pw]': str(panelwattage),
+                    '[in]': str(Inverter_Name),
+                    '[in2]': str(Inverter2_Name),
+                    '[fs]': str(foundation_symbol),
+                    '[cs]': str(carriage_symbol)
                 }
 
     # Loop through the items in the dictionary
@@ -42,7 +84,9 @@ def document_creater(UniqueID, ClientName, SystemSize, Inverter_Watt, Number_of_
         # Replace a placeholder (key) with a new string (value)
         document.Replace(key, value, False, True)
 
-    filename = str(SystemSize)+"kW "+str(ClientName)+ "_Quotation"+ str(UniqueID)
+    filename = str(SystemSize) + "kW " + str(Inverter_TYP) + " " + str(
+        ClientLocation) + " Quotation" + str(UniqueID)
+    tradeMarkRemover(filename)
     print(filename)
     savename = "output/"+filename+".docx"
 

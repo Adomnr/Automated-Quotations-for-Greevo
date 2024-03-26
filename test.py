@@ -1,16 +1,10 @@
-# Python3 code to demonstrate working of
-# Adding comma between numbers
-# Using str.format()
+def round_up_to_nearest_thousand(number):
+    if number % 1000 == 0:
+        return number
+    else:
+        return ((number // 1000) + 1) * 1000
 
-# initializing number
-test_num = 1234567
-
-# printing original number
-print("The original number is : " + str(test_num))
-
-# Using str.format()
-# Adding comma between numbers
-res = ('{:,}'.format(test_num))
-
-# printing result
-print("The number after inserting commas : " + str(res))
+# Test the function
+number = 1276890
+rounded_number = round_up_to_nearest_thousand(number)
+print(f"The nearest thousand of {number} is {rounded_number}")
