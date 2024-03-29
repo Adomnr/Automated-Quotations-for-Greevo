@@ -1,4 +1,4 @@
-from gui import inverter_type_combobox,structure_type_combobox
+from main import inverter_type_combobox,structure_type_combobox
 
 def update_template_type(*args):
     global template_file

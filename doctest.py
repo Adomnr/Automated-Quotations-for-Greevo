@@ -1,9 +1,13 @@
 from spire.doc import *
 
-from trademarkremover import tradeMarkRemover
-
-
-def document_creater(UniqueID, ClientName, ClientLocation, SystemSize, Inverter_TYP, Inverter_Watt, Inverter2_Watt, Number_of_Panels, Net_Metering, template_file, TotalCostNormal, TotalCostRaised, TotalCostNormalNNI, TotalCostRaisedNNI, valueinwords, Inverter_Name, Inverter2_Name, Name_of_Panels, BatteryPrice, BatteryName, BatteryPieces, Number_of_Inverters, panelwattage,Carriage_Cost, Installation, Foundation):
+def document_creater(UniqueID, ClientName, ClientLocation, SystemSize, Inverter_TYP, Inverter_Watt,
+                 Inverter2_Watt, Number_of_Panels,
+                 Net_Metering, template_file, TotalCostNormal, TotalCostRaised,
+                 TotalCostNormalNNI, TotalCostRaisedNNI, valueinwords, Inverter_Name,
+                 Inverter2_Name,
+                 Name_of_Panels, BatteryPrice, BatteryName, BatteryPieces, Number_of_inverters,
+                 panelwattage,
+                 Carriage_Cost, Installation, Foundation, Earthing):
     # Create a Document object
     document = Document()
 
@@ -11,6 +15,7 @@ def document_creater(UniqueID, ClientName, ClientLocation, SystemSize, Inverter_
     document.LoadFromFile(template_file)
     NOS = int(int(Number_of_Panels)/2)
 
+    print("was here")
     batteryprice = int(BatteryPrice) * int(BatteryPieces)
 
     panelname = Name_of_Panels[:5-6]
@@ -19,6 +24,8 @@ def document_creater(UniqueID, ClientName, ClientLocation, SystemSize, Inverter_
     TCR = ('{:,}'.format(int(TotalCostRaised)))
     TCNNI = ('{:,}'.format(int(TotalCostNormalNNI)))
     TCRNI = ('{:,}'.format(int(TotalCostRaisedNNI)))
+
+    Net_Metering_cost = ('{:,}'.format(int(Net_Metering)))
 
     net_metering_symbol = ""
 
@@ -50,6 +57,15 @@ def document_creater(UniqueID, ClientName, ClientLocation, SystemSize, Inverter_
         str(batteryprice)
         batteryprice = "N/A"
 
+    if Installation == 0:
+        installation_symbol = "N/A"
+    else:
+        installation_symbol = "01 Job"
+
+    if Earthing == 0:
+        earthing_symbol = "N/A"
+    else:
+        earthing_symbol = "01 Set"
 
 
     # Store the placeholders and new strings in a dictionary
@@ -58,7 +74,7 @@ def document_creater(UniqueID, ClientName, ClientLocation, SystemSize, Inverter_
                     '[sw]': str(SystemSize),
                     '[nop]': str(Number_of_Panels),
                     '[nos]': str(NOS),
-                    '[noi]': str(Number_of_Inverters),
+                    '[noi]': str(Number_of_inverters),
                     '[iw]': str(Inverter_Watt),
                     '[iwy]': str(inverter_warranty_year),
                     '[calculated_price]': str(TCR),
@@ -69,14 +85,16 @@ def document_creater(UniqueID, ClientName, ClientLocation, SystemSize, Inverter_
                     '[bn]': str(BatteryName),
                     '[bp]': str(batteryprice),
                     '[bv]': str(BatteryPieces),
-                    '[nmc]': str(Net_Metering),
+                    '[nmc]': str(Net_Metering_cost),
                     '[nms]': str(net_metering_symbol),
                     '[pn]': panelname,
                     '[pw]': str(panelwattage),
                     '[in]': str(Inverter_Name),
                     '[in2]': str(Inverter2_Name),
                     '[fs]': str(foundation_symbol),
-                    '[cs]': str(carriage_symbol)
+                    '[cs]': str(carriage_symbol),
+                    '[es]': str(earthing_symbol),
+                    '[is]': str(installation_symbol)
                 }
 
     # Loop through the items in the dictionary
@@ -86,10 +104,8 @@ def document_creater(UniqueID, ClientName, ClientLocation, SystemSize, Inverter_
 
     filename = str(SystemSize) + "kW " + str(Inverter_TYP) + " " + str(
         ClientLocation) + " Quotation" + str(UniqueID)
-    tradeMarkRemover(filename)
     print(filename)
     savename = "output/"+filename+".docx"
-
 
     # Save the resulting document
     document.SaveToFile(savename, FileFormat.Docx2016)
