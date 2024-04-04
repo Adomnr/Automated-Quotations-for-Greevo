@@ -359,16 +359,12 @@ def enter_data():
                                 print("------------------------------------------")
 
                                 document_creater(UniqueID, ClientName, ClientLocation, SystemSize, Inverter_TYP,
-                                                     Inverter_Watt,
-                                                     Inverter2_Watt, Number_of_Panels,
-                                                     Net_Metering, template_file, TotalCostNormal, TotalCostRaised,
-                                                     TotalCostNormalNNI, TotalCostRaisedNNI, valueinwords,
-                                                     Inverter_Name,
-                                                     Inverter2_Name,
-                                                     Name_of_Panels, BatteryPrice, BatteryName, BatteryPieces,
-                                                     Number_of_inverters,
-                                                    panelwattage,
-                                                     Carriage_Cost, Installation, Foundation, Earthing_val)
+                                                Inverter_Watt, Inverter2_Watt, Number_of_Panels,
+                                                Net_Metering, template_file, TotalCostNormal, TotalCostRaised,
+                                                TotalCostNormalNNI, TotalCostRaisedNNI, valueinwords,
+                                                Inverter_Name, Inverter2_Name,
+                                                Name_of_Panels, BatteryPrice, BatteryName, BatteryPieces,Number_of_inverters,
+                                                panelwattage,Carriage_Cost, Installation, Foundation, Earthing_val)
 
                                 filename = str(SystemSize) + "kW " + str(Inverter_TYP) + " " + str(
                                     ClientLocation) + " Quotation" + str(UniqueID)
@@ -689,9 +685,10 @@ def update_panel(*args):
 
 def Panels_Numbers(panelwattage):
     global Number_of_Panels
-    SZ = int(System_Size_combobox.get()) * 1000
+    SZ = float(System_Size_combobox.get()) * 1000
     Number_of_Panels = SZ / int(panelwattage)
     Number_of_Panels = math.ceil(Number_of_Panels)
+    Number_of_Panels = int(Number_of_Panels)
     print(Number_of_Panels)
 
 
