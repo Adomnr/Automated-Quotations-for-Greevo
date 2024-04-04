@@ -15,22 +15,21 @@ creds = ServiceAccountCredentials.from_json_keyfile_name("./Data/secret_key.json
 file = gspread.authorize(creds)
 
 # Importing all three sheets with Hybrid Off grid and Grid Tied and Also Solar Panels Prices
-Hybrid_Offgrid_Inverter_prices = file.open('Hydrid_Offgrid_Inverter_prices')
-Grid_Tied_Inverter_prices = file.open("Grid_Tied_Inverter_Rates")
-Solar_Panel_Prices = file.open("solar_panel_prices")
-Customer_Data = file.open("Customer_Quotation_Data")
+
+Greevo_Data = file.open("Greevo Data")
+
 
 # Importing sheet 1 of all of them
-Hybrid_Offgrid_Inverters = Hybrid_Offgrid_Inverter_prices.sheet1
-Grid_Tied_Inverters = Grid_Tied_Inverter_prices.sheet1
-Solar_Panels = Solar_Panel_Prices.sheet1
-Customer_Data_Sheet = Customer_Data.sheet1
+Hybrid_Inverters = Greevo_Data.worksheet("Hybrid Inverters Rates")
+Grid_Tied_Inverters = Greevo_Data.worksheet("Grid Tie Inverters Rates")
+Solar_Panels = Greevo_Data.worksheet("Solar Panels Rates")
+Customer_Data_Sheet = Greevo_Data.worksheet("Customer Data")
 
 # Importing Inverter Names with separated values
 Grid_Tie_name_of_inverters = Grid_Tied_Inverters.col_values(1)
 
 # Importing name wattage and price of hybrid off grid inverters
-Hybrid_name_of_inverters = Hybrid_Offgrid_Inverters.col_values(1)
+Hybrid_name_of_inverters = Hybrid_Inverters.col_values(1)
 
 # Importing name wattage and price of Solar Panels
 Solar_Panels_Names = Solar_Panels.col_values(1)
