@@ -1,13 +1,45 @@
 from spire.doc import *
+import os
+from datetime import datetime
 
-def document_creater(UniqueID, ClientName, ClientLocation, SystemSize, Inverter_TYP, Inverter_Watt,
-                 Inverter2_Watt, Number_of_Panels,
-                 Net_Metering, template_file, TotalCostNormal, TotalCostRaised,
-                 TotalCostNormalNNI, TotalCostRaisedNNI, valueinwords, Inverter_Name,
-                 Inverter2_Name,
-                 Name_of_Panels, BatteryPrice, BatteryName, BatteryPieces, Number_of_inverters,
-                 panelwattage,
-                 Carriage_Cost, Installation, Foundation, Earthing):
+def new_folder(filename):
+    # Get the current date
+    current_date = datetime.now()
+
+    # Define the filename
+    filename = "example.txt"  # Replace "example.txt" with your actual filename
+
+    # Define the directory structure
+    directory_year_month = current_date.strftime("%B %Y")
+    directory_day = current_date.strftime("%B %d")
+
+    # Create the directories if they don't exist
+    os.makedirs(os.path.join(directory_year_month, directory_day), exist_ok=True)
+
+    # Combine the directory paths
+    folder_path = os.path.join(directory_year_month, directory_day)
+
+    # Path to the new file
+    file_path = os.path.join(folder_path, filename)
+
+    # Create the new file
+    with open(file_path, "w") as file:
+        # You can write to the file here if needed
+        pass
+
+    print(f"New file '{filename}' created in folder '{folder_path}'")
+
+
+def document_creater(UniqueID, ClientName, ClientLocation, SystemSize, Inverter_TYP,
+                    Inverter_Watt, Inverter2_Watt, Number_of_Panels,
+                    Net_Metering, template_file, TotalCostNormal, TotalCostRaised,
+                    TotalCostNormalNNI, TotalCostRaisedNNI, valueinwords,
+                    Inverter_Name, Inverter2_Name,
+                    Name_of_Panels, BatteryPrice, BatteryName, BatteryPieces,
+                    Number_of_inverters, panelwattage,
+                    Carriage_Cost, Installation, Foundation, Earthing_val,
+                    panelprice, structure_rate_normal, structure_rate_raised, InverterPrice,
+                    pv_balance, Structure_TYP, advancepanelnames, advanceinverternames,advancecablename):
     # Create a Document object
     document = Document()
 
@@ -62,11 +94,18 @@ def document_creater(UniqueID, ClientName, ClientLocation, SystemSize, Inverter_
     else:
         installation_symbol = "01 Job"
 
-    if Earthing == 0:
+    if Earthing_val == 0:
         earthing_symbol = "N/A"
     else:
         earthing_symbol = "01 Set"
 
+    TotalPanelPrice = int(panelprice) * int(panelwattage) * int(Number_of_Panels)
+
+    structure_rate = 0
+    if Structure_TYP == "Normal":
+        structure_rate = int(structure_rate_normal)
+    else:
+        structure_rate = int(structure_rate_raised)
 
     # Store the placeholders and new strings in a dictionary
     dictionary = {
@@ -94,7 +133,17 @@ def document_creater(UniqueID, ClientName, ClientLocation, SystemSize, Inverter_
                     '[fs]': str(foundation_symbol),
                     '[cs]': str(carriage_symbol),
                     '[es]': str(earthing_symbol),
-                    '[is]': str(installation_symbol)
+                    '[is]': str(installation_symbol),
+                    '[pp]': str(TotalPanelPrice),
+                    '[sp]': str(structure_rate),
+                    '[pvp]': str(pv_balance),
+                    '[ep]': str(Earthing_val),
+                    '[isp]': str(Installation),
+                    '[cp]': str(Carriage_Cost),
+                    '[fp]': str(Foundation),
+                    '[apn]': str(advancepanelnames),
+                    '[ain]': str(advanceinverternames),
+                    '[acn]': str(advancecablename)
                 }
 
     # Loop through the items in the dictionary
