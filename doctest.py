@@ -35,11 +35,11 @@ def document_creater(UniqueID, ClientName, ClientLocation, SystemSize, Inverter_
                     Net_Metering, template_file, TotalCostNormal, TotalCostRaised,
                     TotalCostNormalNNI, TotalCostRaisedNNI, valueinwords,
                     Inverter_Name, Inverter2_Name,
-                    Name_of_Panels, BatteryPrice, BatteryName, BatteryPieces,
+                    Name_of_Panels, BatteryPrice, BatteryName, BatteryPieces, BatterySpecs,
                     Number_of_inverters, panelwattage,
                     Carriage_Cost, Installation, Foundation, Earthing_val,
                     panelprice, structure_rate_normal, structure_rate_raised, InverterPrice,
-                    pv_balance, Structure_TYP, advancepanelnames, advanceinverternames,advancecablename):
+                    pv_balance, Structure_TYP, advancepanelnames, advanceinverternames,advancecablename, NumberofDifferentInverters):
     # Create a Document object
     document = Document()
 
@@ -50,7 +50,7 @@ def document_creater(UniqueID, ClientName, ClientLocation, SystemSize, Inverter_
     print("was here")
     batteryprice = int(BatteryPrice) * int(BatteryPieces)
 
-    panelname = Name_of_Panels[:5-6]
+    panelname = Name_of_Panels[:-6]
 
     TCN = ('{:,}'.format(int(TotalCostNormal)))
     TCR = ('{:,}'.format(int(TotalCostRaised)))
@@ -126,7 +126,7 @@ def document_creater(UniqueID, ClientName, ClientLocation, SystemSize, Inverter_
                     '[bv]': str(BatteryPieces),
                     '[nmc]': str(Net_Metering_cost),
                     '[nms]': str(net_metering_symbol),
-                    '[pn]': panelname,
+                    '[pn]': str(panelname),
                     '[pw]': str(panelwattage),
                     '[in]': str(Inverter_Name),
                     '[in2]': str(Inverter2_Name),

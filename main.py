@@ -24,7 +24,7 @@ Number_of_Panels, panelprice, panelwattage, panel_structure_rate = 0, 0, 0, 0
 
 TotalCostNormal, TotalCostRaised, TotalCostNormalNNI, TotalCostRaisedNNI = 0, 0, 0, 0
 
-advancepanelnames, advanceinverternames, advancecablename = "AC Single Core 6mm Cable", "", ""
+advancepanelnames, advanceinverternames, advancecablename = "", "", "AC Single Core 6mm Cable"
 
 UniqueID = 0
 serialNumber = 0
@@ -83,12 +83,17 @@ def itemised_exist(*args):
                 exist_unique_id()
                 index = 1
         if index == 0:
-            tkinter.messagebox.showwarning(title="Error", message="Enter Carriage, Installation and Net Metering Cost")
+            tkinter.messagebox.showinfo(title="Error", message="Unique ID not Found")
         else:
-            tkinter.messagebox.showinfo(title="Success",message="Unique ID Found")
+            tkinter.messagebox.showinfo(title="Success", message="Unique ID Found")
 
     button = tkinter.Button(existframe, text="Enter UID", command=update_window)
     button.grid(row=3, column=0, sticky="news", padx=20, pady=10)
+
+
+def replace_row(sheet, row_number, row_data):
+    range_to_update = f"A{row_number}:AL{row_number}"  # Assuming data range spans columns A to Z, adjust as needed
+    sheet.update(range_name=range_to_update, values=[row_data])
 
 def trace_id():
     global Exist_Unique_ID
@@ -97,11 +102,12 @@ def trace_id():
     id_list = Customer_Data_Sheet.col_values(3)
     id_list.pop(0)
     for x in id_list:
-        print("NOice"+x)
+        print("NOice" + x)
         if int(Exist_Unique_ID) == int(x):
             break
         index += 1
     return index
+
 
 def exist_unique_id():
     row = trace_id()
@@ -117,7 +123,6 @@ def exist_unique_id():
     # Saving User Info
     user_info_frame = tkinter.LabelFrame(frame, text="Customer Information")
     user_info_frame.grid(row=0, column=0, padx=20, pady=10)
-
 
     System_Size_label = tkinter.Label(user_info_frame, text="System Size")
     System_Size_Entry = ttk.Entry(user_info_frame)
@@ -149,7 +154,7 @@ def exist_unique_id():
     Reffered_Entry.grid(row=generalrowentry, column=3)
 
     if Reffered_Entry.get() == "":
-        Reffered_Entry.insert(0, str(row_data[5]))
+        Reffered_Entry.insert(0, str(row_data[6]))
 
     inverter_selection_frame = tkinter.LabelFrame(frame, text="DIS")
     inverter_selection_frame.grid(row=inverterselectionrow, column=0, sticky="news", padx=20, pady=15)
@@ -161,6 +166,20 @@ def exist_unique_id():
 
     if foundation_work_entry.get() == "":
         foundation_work_entry.insert(0, str(row_data[24]))
+
+    Quotation_type = tkinter.Label(inverter_selection_frame, text="Quotation Type")
+    Quotation_type_Entry = ttk.Combobox(inverter_selection_frame,
+                                           values=["General Net Metering Included",
+                                                   "Specify Brand Net Metering Included",
+                                                   "General Net Metering Not Included",
+                                                   "Specify Brand Net Metering Not Included",
+                                                   "Itemised General Net Metering Included",
+                                                   "Itemised Specify Brand Net Metering Included",
+                                                   "Itemised General Net Metering Not Included",
+                                                   "Itemised Specify Brand Net Metering Not Included"],
+                                           )
+    Quotation_type.grid(row=inverterselectionrow, column=2, padx=5)
+    Quotation_type_Entry.grid(row=inverterselectionrowentry, column=2, padx=5)
 
     inverter1_frame = tkinter.LabelFrame(frame, text="Inverter 1 Area")
     inverter1_frame.grid(row=inverterrow, column=0, sticky="news", padx=20, pady=15)
@@ -191,8 +210,9 @@ def exist_unique_id():
 
     inverter1_price_label = tkinter.Label(inverter1_frame, text="Inverter 1 Price")
     inverter1_price_Entry = ttk.Entry(inverter1_frame)
-    inverter1_price_label.grid(row=inverterrow,column=3,padx=5)
-    inverter1_price_Entry.grid(row=inverterrowentry,column=3,padx=5)
+    inverter1_price_label.grid(row=inverterrow, column=3, padx=5)
+    inverter1_price_Entry.grid(row=inverterrowentry, column=3, padx=5)
+
     if inverter1_price_Entry.get() == "":
         inverter1_price_Entry.insert(0, str(row_data[10]))
 
@@ -256,7 +276,7 @@ def exist_unique_id():
     panel_name_Entry.grid(row=panelrowentry, column=0, padx=5)
 
     if panel_name_Entry.get() == "":
-        panel_name_Entry.insert(0,str(row_data[17]))
+        panel_name_Entry.insert(0, str(row_data[17]))
 
     panel_price_label = tkinter.Label(panel_frame, text="Panel Price Per Watt")
     panel_price_entry = tkinter.Entry(panel_frame)
@@ -288,8 +308,7 @@ def exist_unique_id():
     structure_type_Entry.grid(row=panelrowentry, column=4, padx=5)
 
     if structure_type_Entry.get() == "":
-        structure_type_Entry.insert(0, str(row_data[25]))
-
+        structure_type_Entry.insert(0, str(row_data[26]))
 
     battery_frame = tkinter.LabelFrame(frame, text="Battery Area")
     battery_frame.grid(row=batteryrow, column=0, sticky="news", padx=20, pady=15)
@@ -299,15 +318,24 @@ def exist_unique_id():
     Battery_Name_Label.grid(row=batteryrow, column=0, padx=5)
     Battery_Name_Entry.grid(row=batteryentryrow, column=0, padx=5)
 
+    if Battery_Name_Entry.get() == "":
+        Battery_Name_Entry.insert(0, str(row_data[30]))
+
     Battery_Price_Label = tkinter.Label(battery_frame, text="Battery Price")
     Battery_Price_Entry = ttk.Entry(battery_frame)
     Battery_Price_Label.grid(row=batteryrow, column=1, padx=5)
     Battery_Price_Entry.grid(row=batteryentryrow, column=1, padx=5)
 
+    if Battery_Price_Entry.get() == "":
+        Battery_Price_Entry.insert(0, str(row_data[29]))
+
     Number_of_Batteries_Label = tkinter.Label(battery_frame, text="Number of Batteries")
     Number_of_Batteries_Entry = ttk.Entry(battery_frame)
     Number_of_Batteries_Label.grid(row=batteryrow, column=2, padx=5)
     Number_of_Batteries_Entry.grid(row=batteryentryrow, column=2, padx=5)
+
+    if Number_of_Batteries_Entry.get() == "":
+        Number_of_Batteries_Entry.insert(0, str(row_data[31]))
 
     for widget in user_info_frame.winfo_children():
         widget.grid_configure(padx=10, pady=5)
@@ -318,24 +346,73 @@ def exist_unique_id():
 
     carriage = tkinter.Label(courses_frame, text="Carriage")
     carriage_entry = ttk.Entry(courses_frame)
-    carriage.grid(row=cinrow, column=0)
-    carriage_entry.grid(row=cinrowentry, column=0)
+    carriage.grid(row=cinrow, column=0, padx=5)
+    carriage_entry.grid(row=cinrowentry, column=0, padx=5)
+
+    if carriage_entry.get() == "":
+        carriage_entry.insert(0, str(row_data[21]))
 
     installation = tkinter.Label(courses_frame, text="Installation")
     installation_entry = ttk.Entry(courses_frame)
-    installation.grid(row=cinrow, column=1)
-    installation_entry.grid(row=cinrowentry, column=1)
+    installation.grid(row=cinrow, column=1, padx=5)
+    installation_entry.grid(row=cinrowentry, column=1, padx=5)
+
+    if installation_entry.get() == "":
+        installation_entry.insert(0, str(row_data[22]))
 
     net_metering = tkinter.Label(courses_frame, text="Net Metering")
     net_metering_entry = ttk.Entry(courses_frame)
-    net_metering.grid(row=cinrow, column=2)
-    net_metering_entry.grid(row=cinrowentry, column=2)
+    net_metering.grid(row=cinrow, column=2, padx=5)
+    net_metering_entry.grid(row=cinrowentry, column=2, padx=5)
+
+    if net_metering_entry.get() == "":
+        net_metering_entry.insert(0, str(row_data[23]))
 
     Earthing = tkinter.Label(courses_frame, text="Earthing")
     Earthing_entry = ttk.Entry(courses_frame)
-    Earthing.grid(row=cinrow, column=3)
-    Earthing_entry.grid(row=cinrowentry, column=3)
+    Earthing.grid(row=cinrow, column=3, padx=5)
+    Earthing_entry.grid(row=cinrowentry, column=3, padx=5)
 
+    if Earthing_entry.get() == "":
+        Earthing_entry.insert(0, str(row_data[25]))
+
+    def make_quotation():
+
+
+        data = [row_data[0], row_data[1], row_data[2], System_Size_Entry.get(), Client_Name_Entry.get(),
+                Client_Location_Entry.get(),
+                Reffered_Entry.get(), inverter_type_Entry.get(), inverter_name_Entry.get(),
+                inverter_wattage_Entry.get(),
+                inverter1_price_Entry.get(), inverter_number_Entry.get(), inverter2_type_Entry.get(),
+                inverter2_name_Entry.get(),
+                inverter2_wattage_Entry.get(), inverter1_price_Entry.get(), inverter2_number_Entry.get(),
+                panel_name_Entry.get(),
+                panel_price_entry.get(), Numberofpanels_entry.get(), pv_balance_Entry.get(), carriage_entry.get(),
+                installation_entry.get(),
+                net_metering_entry.get(), foundation_work_entry.get(), Earthing_entry.get(), structure_type_Entry.get(),
+                row_data[27], Quotation_type_Entry.get(),
+                Battery_Price_Entry.get(), Battery_Name_Entry.get(), Number_of_Batteries_Entry.get()]
+
+    def amend_option():
+        print(row)
+        data = [row_data[0], row_data[1], row_data[2], System_Size_Entry.get(), Client_Name_Entry.get(), Client_Location_Entry.get(),
+                Reffered_Entry.get(), inverter_type_Entry.get(), inverter_name_Entry.get(), inverter_wattage_Entry.get(),
+                inverter1_price_Entry.get(), inverter_number_Entry.get(), inverter2_type_Entry.get(), inverter2_name_Entry.get(),
+                inverter2_wattage_Entry.get(), inverter1_price_Entry.get(), inverter2_number_Entry.get(), panel_name_Entry.get(),
+                panel_price_entry.get(), Numberofpanels_entry.get(), pv_balance_Entry.get(), carriage_entry.get(), installation_entry.get(),
+                net_metering_entry.get(), foundation_work_entry.get(), Earthing_entry.get(), structure_type_Entry.get(), row_data[27], row_data[28],
+                Battery_Price_Entry.get(), Battery_Name_Entry.get(), Number_of_Batteries_Entry.get()]
+        print(data)
+        replace_row(Customer_Data_Sheet,row,data)
+
+    amend_button = tkinter.Button(frame, text="Amend", command=amend_option)
+    amend_button.grid(row=18, column=0, sticky="news", padx=10, pady=10)
+
+
+
+
+    #make_button = tkinter.Button(options_frame, text="Create Quotation", command=itemised_exist)
+    #make_button.grid(row=18, column=2, sticky="news", padx=10, pady=10)
 
 def override_rates(*args):
     newwindow = tkinter.Tk()
@@ -347,7 +424,6 @@ def override_rates(*args):
     # Saving User Info
     Rates_Frames = tkinter.LabelFrame(newframe, text="Inverter and Panel Rates")
     Rates_Frames.grid(row=0, column=0, padx=20, pady=10)
-
 
     Inverter_Rate_Label = tkinter.Label(Rates_Frames, text="Inverter 1 Rate")
     Inverter_Rate_Entry = tkinter.Entry(Rates_Frames)
@@ -363,7 +439,7 @@ def override_rates(*args):
     PanelRateValue.grid(row=3, column=0, padx=20, pady=10)
 
     if PanelRateValue.get() == "":
-        PanelRateValue.insert(0,str(panelprice))
+        PanelRateValue.insert(0, str(panelprice))
 
     structure_rate_normal_label = tkinter.Label(Rates_Frames, text="Normal Structure Rate")
     structure_rate_normal_entry = tkinter.Entry(Rates_Frames)
@@ -393,16 +469,18 @@ def override_rates(*args):
         newwindow.destroy()
 
     ChangeButton = tkinter.Button(newframe, text="Override", command=update_rates)
-    ChangeButton.grid(row=4,column=0)
+    ChangeButton.grid(row=4, column=0)
 
 
 def update_structure_rate_normal_rates(structurepricenormal):
     global structure_rate_normal
     structure_rate_normal = int(structurepricenormal)
 
+
 def update_structure_rate_raised_rates(structurepriceraised):
     global structure_rate_raised
     structure_rate_raised = int(structurepriceraised)
+
 
 def update_panel_price(PanelRateValue):
     global panelprice
@@ -412,6 +490,7 @@ def update_panel_price(PanelRateValue):
 def update_inverter_price(Inverter_Rate_Entry):
     global InverterPrice
     InverterPrice = int(Inverter_Rate_Entry)
+
 
 def advance_options(*args):
     new2window = tkinter.Tk()
@@ -438,7 +517,7 @@ def advance_options(*args):
     PanelNameValue.grid(row=3, column=0, padx=20, pady=10)
 
     if PanelNameValue.get() == "":
-        PanelNameValue.insert(0,str(advancepanelnames))
+        PanelNameValue.insert(0, str(advancepanelnames))
 
     CableNameLabel = tkinter.Label(Rates_Frames, text="Names of AC Cable")
     CableNameValue = tkinter.Entry(Rates_Frames)
@@ -456,19 +535,23 @@ def advance_options(*args):
         new2window.destroy()
 
     ChangeButton = tkinter.Button(new2frame, text="Apply Option", command=update_names)
-    ChangeButton.grid(row=4,column=0)
+    ChangeButton.grid(row=4, column=0)
+
 
 def update_panel_names(PanelNamesValue):
     global advancepanelnames
     advancepanelnames = PanelNamesValue
 
+
 def update_inverters_name(InvertersNameValue):
     global advanceinverternames
     advanceinverternames = InvertersNameValue
 
+
 def update_cable_name(CableName):
     global advancecablename
     advancecablename = CableName
+
 
 def enter_data():
     global valueinwords
@@ -495,6 +578,7 @@ def enter_data():
         ReferredBy = Reffered_combobox.get()
         if SystemSize and ClientName and ClientLocation and ReferredBy:
             print("3")
+            NumberofDifferentInverters = inverter_selection_combobox.get()
             Inverter_TYP = inverter_type_combobox.get()
             Inverter2_TYP = inverter2_type_combobox.get()
             Inverter_Name = inverter_name_combobox.get()
@@ -519,6 +603,7 @@ def enter_data():
                             BatteryPrice = Battery_Price_Entry.get()
                             BatteryName = Battery_Name_Entry.get()
                             BatteryPieces = Number_of_Batteries_Entry.get()
+                            BatterySpecs = Battery_Specification_Entry.get()
                             if Inverter_TYP == "Hybrid" or Inverter2_TYP == "Hybrid":
                                 print("8")
                                 if BatteryPrice and BatteryName and BatteryPieces:
@@ -551,28 +636,32 @@ def enter_data():
                                                          Inverter_Watt, Inverter2_Watt, Number_of_Panels,
                                                          Net_Metering, template_file, TotalCostNormal, TotalCostRaised,
                                                          TotalCostNormalNNI, TotalCostRaisedNNI, valueinwords,
-                                                         Inverter_Name, Inverter2_Name,
-                                                         Name_of_Panels, BatteryPrice, BatteryName, BatteryPieces,
-                                                         Number_of_inverters, panelwattage,
-                                                         Carriage_Cost, Installation, Foundation, Earthing_val,
-                                                         panelprice, structure_rate_normal, structure_rate_raised, InverterPrice,pv_balance,
-                                                         Structure_Type, advancepanelnames, advanceinverternames,advancecablename)
+                                                         Inverter_Name, Inverter2_Name, Name_of_Panels, BatteryPrice, BatteryName, BatteryPieces,
+                                                         BatterySpecs, Number_of_inverters, panelwattage,
+                                                         Carriage_Cost, Installation, Foundation, Earthing_val, panelprice,
+                                                         structure_rate_normal, structure_rate_raised, InverterPrice, pv_balance,
+                                                         Structure_Type, advancepanelnames, advanceinverternames, advancecablename, NumberofDifferentInverters)
 
                                         filename = str(SystemSize) + "kW " + str(Inverter_TYP) + " " + str(
                                             ClientLocation) + " Quotation" + str(UniqueID)
                                         tradeMarkRemover(filename)
 
                                         record_data(SystemSize, UniqueID, ClientName, ClientLocation, ReferredBy,
-                                                    Inverter_TYP, Inverter_Name, Inverter_Watt, InverterPrice,Number_of_Inverter1,
-                                                    Inverter2_TYP, Inverter2_Name, Inverter2_Watt, Inverter2Price,Number_of_Inverter2,
-                                                    Name_of_Panels, panelprice, Number_of_Panels, pv_balance, Carriage_Cost,
-                                                    Installation, Net_Metering, Foundation, Structure_Type, template_file,
-                                                    Quotation_TYP, TotalCostNormal, TotalCostRaised, TotalCostNormalNNI, TotalCostRaisedNNI )
-                                        tkinter.messagebox.showinfo(title="Success", message="File is Created and Recorded\nFileName: "+filename)
+                                                    Inverter_TYP, Inverter_Name, Inverter_Watt, InverterPrice,
+                                                    Number_of_Inverter1, Inverter2_TYP, Inverter2_Name, Inverter2_Watt, Inverter2Price,
+                                                    Number_of_Inverter2, Name_of_Panels, panelprice, Number_of_Panels, pv_balance,
+                                                    Carriage_Cost, Installation, Net_Metering, Foundation, Earthing_val,
+                                                    Structure_Type, template_file,  Quotation_TYP, BatteryPrice, BatteryName, BatteryPieces,
+                                                    BatterySpecs, TotalCostNormal, TotalCostRaised, TotalCostNormalNNI,
+                                                    TotalCostRaisedNNI, NumberofDifferentInverters)
+                                        tkinter.messagebox.showinfo(title="Success",
+                                                                    message="File is Created and Recorded\nFileName: " + filename)
                                     else:
-                                        tkinter.messagebox.showwarning(title="Error", message="Enter Carriage, Installation and Net Metering Cost")
+                                        tkinter.messagebox.showwarning(title="Error",
+                                                                       message="Enter Carriage, Installation and Net Metering Cost")
                                 else:
-                                    tkinter.messagebox.showwarning(title="Error", message="Battery Name, Rate and Pieces")
+                                    tkinter.messagebox.showwarning(title="Error",
+                                                                   message="Battery Name, Rate and Pieces")
                             else:
                                 Foundation = foundation_work_entry.get()
                                 Carriage_Cost = carriage_entry.get()
@@ -581,33 +670,35 @@ def enter_data():
                                 Earthing_val = Earthing_entry.get()
                                 if Carriage_Cost and Installation and Net_Metering:
                                     print("System Size: ", SystemSize, "Client Name: ", ClientName, "Client Location: ",
-                                        ClientLocation)
-                                    print("Referred by: ", ReferredBy, "Inverter Type: ", Inverter_TYP, "Inverter Name: ",
-                                        Inverter_Name)
+                                          ClientLocation)
+                                    print("Referred by: ", ReferredBy, "Inverter Type: ", Inverter_TYP,
+                                          "Inverter Name: ",
+                                          Inverter_Name)
                                     print("Inverter Wattage ", Inverter_Watt, "Panel Name: ", Name_of_Panels,
-                                        "Panel Price: ", panelprice)
+                                          "Panel Price: ", panelprice)
                                     print("Inverter 1 Price", InverterPrice, "Inverter 2 Price", Inverter2Price)
                                     print("No of Panels: ", Number_of_Panels, "Structure Type: ", Structure_Type)
-                                    print("PV Balance: ", pv_balance, "Carriage: ", Carriage_Cost, "Installation Cost: ",
-                                        Installation)
-                                    print("Net Metering: ", Net_Metering, "Template File", template_file, "Inverter Price",
-                                        InverterPrice)
-                                    print("Total Cost Normal: ", TotalCostNormal, "Total Cost Raised: ", TotalCostRaised,
-                                        "Unique ID: ", UniqueID)
+                                    print("PV Balance: ", pv_balance, "Carriage: ", Carriage_Cost,
+                                          "Installation Cost: ",
+                                          Installation)
+                                    print("Net Metering: ", Net_Metering, "Template File", template_file,
+                                          "Inverter Price",
+                                          InverterPrice)
+                                    print("Total Cost Normal: ", TotalCostNormal, "Total Cost Raised: ",
+                                          TotalCostRaised,
+                                          "Unique ID: ", UniqueID)
                                     print("------------------------------------------")
 
-                                    document_creater(UniqueID, ClientName, ClientLocation, SystemSize,
-                                                     Inverter_TYP, Inverter_Watt, Inverter2_Watt, Number_of_Panels,
-                                                     Net_Metering, template_file, TotalCostNormal, TotalCostRaised,
-                                                     TotalCostNormalNNI, TotalCostRaisedNNI, valueinwords,
-                                                     Inverter_Name,
-                                                     Inverter2_Name, Name_of_Panels, BatteryPrice, BatteryName,
-                                                     BatteryPieces,
-                                                     Number_of_inverters, panelwattage,
-                                                     Carriage_Cost, Installation, Foundation, Earthing_val,
-                                                     Structure_Type,
-                                                     advancepanelnames, advanceinverternames, Structure_Type,
-                                                     advancepanelnames, advanceinverternames,advancecablename)
+                                    document_creater(UniqueID, ClientName, ClientLocation, SystemSize, Inverter_TYP,
+                                                    Inverter_Watt, Inverter2_Watt, Number_of_Panels,
+                                                    Net_Metering, template_file, TotalCostNormal, TotalCostRaised,
+                                                    TotalCostNormalNNI, TotalCostRaisedNNI, valueinwords,
+                                                    Inverter_Name, Inverter2_Name,
+                                                    Name_of_Panels, BatteryPrice, BatteryName, BatteryPieces, BatterySpecs,
+                                                    Number_of_inverters, panelwattage,
+                                                    Carriage_Cost, Installation, Foundation, Earthing_val,
+                                                    panelprice, structure_rate_normal, structure_rate_raised, InverterPrice,
+                                                    pv_balance, Structure_Type, advancepanelnames, advanceinverternames,advancecablename, NumberofDifferentInverters)
 
                                     filename = str(SystemSize) + "kW " + str(Inverter_TYP) + " " + str(
                                         ClientLocation) + " Quotation" + str(UniqueID)
@@ -615,17 +706,24 @@ def enter_data():
                                     print('11')
 
                                     record_data(SystemSize, UniqueID, ClientName, ClientLocation, ReferredBy,
-                                                    Inverter_TYP, Inverter_Name, Inverter_Watt, InverterPrice,Number_of_Inverter1,
-                                                    Inverter2_TYP, Inverter2_Name, Inverter2_Watt, Inverter2Price,Number_of_Inverter2,
-                                                    Name_of_Panels, panelprice, Number_of_Panels, pv_balance, Carriage_Cost,
-                                                    Installation, Net_Metering, Foundation, Structure_Type, template_file,
-                                                    Quotation_TYP, TotalCostNormal, TotalCostRaised, TotalCostNormalNNI, TotalCostRaisedNNI)
+                                                Inverter_TYP, Inverter_Name, Inverter_Watt, InverterPrice,
+                                                Number_of_Inverter1,
+                                                Inverter2_TYP, Inverter2_Name, Inverter2_Watt, Inverter2Price,
+                                                Number_of_Inverter2,
+                                                Name_of_Panels, panelprice, Number_of_Panels, pv_balance, Carriage_Cost,
+                                                Installation, Net_Metering, Foundation, Earthing_val, Structure_Type,
+                                                template_file,
+                                                Quotation_TYP, BatteryPrice, BatteryName, BatteryPieces, BatterySpecs,
+                                                TotalCostNormal, TotalCostRaised, TotalCostNormalNNI,
+                                                TotalCostRaisedNNI, NumberofDifferentInverters)
                                     tkinter.messagebox.showinfo(title="Success",
                                                                 message="File is Created and Recorded\nFileName: " + filename)
                                 else:
-                                    tkinter.messagebox.showwarning(title="Error", message="Enter Carriage, Installation and Net Metering Cost")
+                                    tkinter.messagebox.showwarning(title="Error",
+                                                                   message="Enter Carriage, Installation and Net Metering Cost")
                         else:
-                            tkinter.messagebox.showwarning(title="Error", message="Enter Structure Type and PV Balance.")
+                            tkinter.messagebox.showwarning(title="Error",
+                                                           message="Enter Structure Type and PV Balance.")
                 else:
                     print("5")
                     print("6")
@@ -637,6 +735,7 @@ def enter_data():
                         BatteryPrice = Battery_Price_Entry.get()
                         BatteryName = Battery_Name_Entry.get()
                         BatteryPieces = Number_of_Batteries_Entry.get()
+                        BatterySpecs = Battery_Specification_Entry.get()
                         if Inverter_TYP == "Hybrid":
                             print("8")
                             if BatteryPrice and BatteryName and BatteryPieces:
@@ -648,46 +747,57 @@ def enter_data():
                                 Net_Metering = net_metering_entry.get()
                                 if Carriage_Cost and Installation and Net_Metering and Foundation and Earthing_val:
                                     print("10")
-                                    print("System Size: ", SystemSize, "Client Name: ", ClientName,                                            "Client Location: ", ClientLocation)
+                                    print("System Size: ", SystemSize, "Client Name: ", ClientName, "Client Location: ",
+                                          ClientLocation)
                                     print("Referred by: ", ReferredBy, "Inverter Type: ", Inverter_TYP,
-                                        "Inverter Name: ", Inverter_Name)
+                                          "Inverter Name: ", Inverter_Name)
                                     print("Inverter Wattage ", Inverter_Watt, "Panel Name: ", Name_of_Panels,
-                                        "Panel Price: ", panelprice)
+                                          "Panel Price: ", panelprice)
                                     print("Inverter 1 Price", InverterPrice, "Inverter 2 Price", Inverter2Price)
                                     print("No of Panels: ", Number_of_Panels, "Structure Type: ",
-                                        Structure_Type)
+                                          Structure_Type)
                                     print("PV Balance: ", pv_balance, "Carriage: ", Carriage_Cost,
-                                        "Installation Cost: ", Installation)
-                                    print("Net Metering: ", Net_Metering, "Template File", template_file,                                            "Inverter Price", InverterPrice)
+                                          "Installation Cost: ", Installation)
+                                    print("Net Metering: ", Net_Metering, "Template File", template_file,
+                                          "Inverter Price", InverterPrice)
                                     print("Total Cost Normal: ", TotalCostNormal, "Total Cost Raised: ",
-                                        TotalCostRaised, "Unique ID: ", UniqueID)
+                                          TotalCostRaised, "Unique ID: ", UniqueID)
                                     print("------------------------------------------")
 
                                     document_creater(UniqueID, ClientName, ClientLocation, SystemSize, Inverter_TYP,
-                                                         Inverter_Watt, Inverter2_Watt, Number_of_Panels,
-                                                         Net_Metering, template_file, TotalCostNormal, TotalCostRaised,
-                                                         TotalCostNormalNNI, TotalCostRaisedNNI, valueinwords,
-                                                         Inverter_Name, Inverter2_Name,
-                                                         Name_of_Panels, BatteryPrice, BatteryName, BatteryPieces,
-                                                         Number_of_inverters, panelwattage,
-                                                         Carriage_Cost, Installation, Foundation, Earthing_val,
-                                                         panelprice, structure_rate_normal, structure_rate_raised, InverterPrice,pv_balance,
-                                                        Structure_Type, advancepanelnames, advanceinverternames,advancecablename)
+                                                     Inverter_Watt, Inverter2_Watt, Number_of_Panels,
+                                                     Net_Metering, template_file, TotalCostNormal, TotalCostRaised,
+                                                     TotalCostNormalNNI, TotalCostRaisedNNI, valueinwords,
+                                                     Inverter_Name, Inverter2_Name,
+                                                     Name_of_Panels, BatteryPrice, BatteryName, BatteryPieces,
+                                                     BatterySpecs,
+                                                     Number_of_inverters, panelwattage,
+                                                     Carriage_Cost, Installation, Foundation, Earthing_val,
+                                                     panelprice, structure_rate_normal, structure_rate_raised,
+                                                     InverterPrice, pv_balance,
+                                                     Structure_Type, advancepanelnames, advanceinverternames,
+                                                     advancecablename, NumberofDifferentInverters)
 
                                     filename = str(SystemSize) + "kW " + str(Inverter_TYP) + " " + str(
                                         ClientLocation) + " Quotation" + str(UniqueID)
                                     tradeMarkRemover(filename)
 
                                     record_data(SystemSize, UniqueID, ClientName, ClientLocation, ReferredBy,
-                                                    Inverter_TYP, Inverter_Name, Inverter_Watt, InverterPrice,Number_of_Inverter1,
-                                                    Inverter2_TYP, Inverter2_Name, Inverter2_Watt, Inverter2Price,Number_of_Inverter2,
-                                                    Name_of_Panels, panelprice, Number_of_Panels, pv_balance, Carriage_Cost,
-                                                    Installation, Net_Metering, Foundation, Structure_Type, template_file,
-                                                    Quotation_TYP, TotalCostNormal, TotalCostRaised, TotalCostNormalNNI, TotalCostRaisedNNI)
+                                                Inverter_TYP, Inverter_Name, Inverter_Watt, InverterPrice,
+                                                Number_of_Inverter1,
+                                                Inverter2_TYP, Inverter2_Name, Inverter2_Watt, Inverter2Price,
+                                                Number_of_Inverter2,
+                                                Name_of_Panels, panelprice, Number_of_Panels, pv_balance, Carriage_Cost,
+                                                Installation, Net_Metering, Foundation, Earthing_val, Structure_Type,
+                                                template_file,
+                                                Quotation_TYP, BatteryPrice, BatteryName, BatteryPieces, BatterySpecs,
+                                                TotalCostNormal, TotalCostRaised, TotalCostNormalNNI,
+                                                TotalCostRaisedNNI, NumberofDifferentInverters)
                                     tkinter.messagebox.showinfo(title="Success",
                                                                 message="File is Created and Recorded\nFileName: " + filename)
                                 else:
-                                    tkinter.messagebox.showwarning(title="Error", message="Enter Carriage, Installation and Net Metering Cost")
+                                    tkinter.messagebox.showwarning(title="Error",
+                                                                   message="Enter Carriage, Installation and Net Metering Cost")
                         else:
                             Foundation = foundation_work_entry.get()
                             Carriage_Cost = carriage_entry.get()
@@ -696,54 +806,59 @@ def enter_data():
                             Earthing_val = Earthing_entry.get()
                             if Carriage_Cost and Installation and Net_Metering:
                                 print("System Size: ", SystemSize, "Client Name: ", ClientName,
-                                    "Client Location: ", ClientLocation)
+                                      "Client Location: ", ClientLocation)
                                 print("Referred by: ", ReferredBy, "Inverter Type: ", Inverter_TYP,
-                                    "Inverter Name: ", Inverter_Name)
+                                      "Inverter Name: ", Inverter_Name)
                                 print("Inver4ter Wattage ", Inverter_Watt, "Panel Name: ", Name_of_Panels,
-                                    "Panel Price: ", panelprice)
+                                      "Panel Price: ", panelprice)
                                 print("Inverter 1 Price", InverterPrice, "Inverter 2 Price", Inverter2Price)
                                 print("No of Panels: ", Number_of_Panels, "Structure Type: ", Structure_Type)
                                 print("PV Balance: ", pv_balance, "Carriage: ", Carriage_Cost,
-                                    "Installation Cost: ", Installation)
+                                      "Installation Cost: ", Installation)
                                 print("Net Metering: ", Net_Metering, "Template File", template_file,
-                                    "Inverter Price", InverterPrice)
+                                      "Inverter Price", InverterPrice)
                                 print("Total Cost Normal: ", TotalCostNormal, "Total Cost Raised: ",
-                                TotalCostRaised, "Unique ID: ", UniqueID)
+                                      TotalCostRaised, "Unique ID: ", UniqueID)
                                 print("------------------------------------------")
 
                                 document_creater(UniqueID, ClientName, ClientLocation, SystemSize, Inverter_TYP,
-                                                         Inverter_Watt, Inverter2_Watt, Number_of_Panels,
-                                                         Net_Metering, template_file, TotalCostNormal, TotalCostRaised,
-                                                         TotalCostNormalNNI, TotalCostRaisedNNI, valueinwords,
-                                                         Inverter_Name, Inverter2_Name,
-                                                         Name_of_Panels, BatteryPrice, BatteryName, BatteryPieces,
-                                                         Number_of_inverters, panelwattage,
-                                                         Carriage_Cost, Installation, Foundation, Earthing_val,
-                                                         panelprice, structure_rate_normal, structure_rate_raised, InverterPrice,pv_balance,
-                                                         Structure_Type, advancepanelnames, advanceinverternames,advancecablename)
+                                                 Inverter_Watt, Inverter2_Watt, Number_of_Panels,
+                                                 Net_Metering, template_file, TotalCostNormal, TotalCostRaised,
+                                                 TotalCostNormalNNI, TotalCostRaisedNNI, valueinwords,
+                                                 Inverter_Name, Inverter2_Name,
+                                                 Name_of_Panels, BatteryPrice, BatteryName, BatteryPieces, BatterySpecs,
+                                                 Number_of_inverters, panelwattage,
+                                                 Carriage_Cost, Installation, Foundation, Earthing_val,
+                                                 panelprice, structure_rate_normal, structure_rate_raised,
+                                                 InverterPrice, pv_balance,
+                                                 Structure_Type, advancepanelnames, advanceinverternames,
+                                                 advancecablename, NumberofDifferentInverters)
 
                                 filename = str(SystemSize) + "kW " + str(Inverter_TYP) + " " + str(
                                     ClientLocation) + " Quotation" + str(UniqueID)
                                 tradeMarkRemover(filename)
 
                                 record_data(SystemSize, UniqueID, ClientName, ClientLocation, ReferredBy,
-                                                    Inverter_TYP, Inverter_Name, Inverter_Watt, InverterPrice,Number_of_Inverter1,
-                                                    Inverter2_TYP, Inverter2_Name, Inverter2_Watt, Inverter2Price,Number_of_Inverter2,
-                                                    Name_of_Panels, panelprice, Number_of_Panels, pv_balance, Carriage_Cost,
-                                                    Installation, Net_Metering, Foundation, Structure_Type, template_file,
-                                                    Quotation_TYP, TotalCostNormal, TotalCostRaised, TotalCostNormalNNI, TotalCostRaisedNNI)
+                                            Inverter_TYP, Inverter_Name, Inverter_Watt, InverterPrice,
+                                            Number_of_Inverter1,
+                                            Inverter2_TYP, Inverter2_Name, Inverter2_Watt, Inverter2Price,
+                                            Number_of_Inverter2,
+                                            Name_of_Panels, panelprice, Number_of_Panels, pv_balance, Carriage_Cost,
+                                            Installation, Net_Metering, Foundation, Earthing_val, Structure_Type,
+                                            template_file,
+                                            Quotation_TYP, BatteryPrice, BatteryName, BatteryPieces, BatterySpecs,
+                                            TotalCostNormal, TotalCostRaised, TotalCostNormalNNI, TotalCostRaisedNNI, NumberofDifferentInverters)
                                 tkinter.messagebox.showinfo(title="Success",
                                                             message="File is Created and Recorded\nFileName: " + filename)
                             else:
-                                tkinter.messagebox.showwarning(title="Error", message="Enter Carriage, Installation and Net Metering Cost")
+                                tkinter.messagebox.showwarning(title="Error",
+                                                               message="Enter Carriage, Installation and Net Metering Cost")
                     else:
                         tkinter.messagebox.showwarning(title="Error", message="Enter Structure Type and PV Balance.")
             else:
                 tkinter.messagebox.showwarning(title="Error", message="Enter All box of Inverters.")
         else:
             tkinter.messagebox.showwarning(title="Error", message="Enter All boxes of Client Information.")
-    else:
-        tkinter.messagebox.showwarning(title="Error", message="You have not accepted the terms")
 
 
 # This updates the template which is going to be subsituited the placeholder into GTGN Grid Tied General Normal
@@ -768,24 +883,31 @@ def total_cost_calculator(*args):
           Number_of_Panels, "  ", panelwattage, "  ", panelprice, "  ", pv_balance, "  ", Carriage_Cost, "  ",
           Installation, "  ", Net_Metering, "  ", Foundation_Work)
     TotalCostRaised = round_up_to_nearest_thousand(
-            (int(InverterPrice) * int(Number_of_Inverter1)) + (int(Inverter2Price) * int(Number_of_Inverter2)) +
-            (int(structure_rate_raised) * int(Number_of_Panels) * int(panelwattage)) + (int(panelwattage) * int(panelprice) *
-            int(Number_of_Panels)) + int(pv_balance) + int(Carriage_Cost) + int(Installation) + int(Net_Metering) + int(Foundation_Work))
+        (int(InverterPrice) * int(Number_of_Inverter1)) + (int(Inverter2Price) * int(Number_of_Inverter2)) +
+        (int(structure_rate_raised) * int(Number_of_Panels) * int(panelwattage)) + (
+                    int(panelwattage) * int(panelprice) *
+                    int(Number_of_Panels)) + int(pv_balance) + int(Carriage_Cost) + int(Installation) + int(
+            Net_Metering) + int(Foundation_Work))
     print(TotalCostRaised)
     TotalCostRaisedNNI = round_up_to_nearest_thousand((int(InverterPrice) * int(Number_of_Inverter1)) +
-            (int(Inverter2Price) * int(Number_of_Inverter2)) + (int(structure_rate_raised) *
-            int(Number_of_Panels) * int(panelwattage)) + (int(panelwattage) * int(panelprice) * int(Number_of_Panels))
-            + int(pv_balance) + int(Carriage_Cost) + int(Installation) + int(Foundation_Work))
+                                                      (int(Inverter2Price) * int(Number_of_Inverter2)) +
+                                                      (int(structure_rate_raised) *int(Number_of_Panels) *
+                                                       int(panelwattage)) + (int(panelwattage) * int(panelprice) *
+                                                        int(Number_of_Panels)) + int(pv_balance) + int(Carriage_Cost) +
+                                                      int(Installation) + int( Foundation_Work))
     print(TotalCostRaisedNNI)
     TotalCostNormal = round_up_to_nearest_thousand(
-            (int(InverterPrice) * int(Number_of_Inverter1)) + (int(Inverter2Price) * int(Number_of_Inverter2)) +
-            int((int(structure_rate_normal) * (int(Number_of_Panels) / 2))) + (int(panelwattage) * int(panelprice) * int(Number_of_Panels)) +
-            int(pv_balance) + int(Carriage_Cost) + int(Installation) + int(Net_Metering) + int(Foundation_Work))
+        (int(InverterPrice) * int(Number_of_Inverter1)) + (int(Inverter2Price) * int(Number_of_Inverter2)) +
+        int((int(structure_rate_normal) * (int(Number_of_Panels) / 2))) + (
+                    int(panelwattage) * int(panelprice) * int(Number_of_Panels)) +
+        int(pv_balance) + int(Carriage_Cost) + int(Installation) + int(Net_Metering) + int(Foundation_Work))
     print(TotalCostNormal)
     TotalCostNormalNNI = round_up_to_nearest_thousand((int(InverterPrice) * int(Number_of_Inverter1)) +
-            (int(Inverter2Price) * int(Number_of_Inverter2)) + int((int(structure_rate_normal) * (int(Number_of_Panels) / 2))) +
-            (int(panelwattage) * int(panelprice) * int(Number_of_Panels)) + int(pv_balance) + int(Carriage_Cost) +
-            int(Installation) + int(Foundation_Work))
+                                                      (int(Inverter2Price) * int(Number_of_Inverter2)) + int(
+        (int(structure_rate_normal) * (int(Number_of_Panels) / 2))) +
+                                                      (int(panelwattage) * int(panelprice) * int(
+                                                          Number_of_Panels)) + int(pv_balance) + int(Carriage_Cost) +
+                                                      int(Installation) + int(Foundation_Work))
     print(TotalCostNormalNNI)
 
 
@@ -806,11 +928,12 @@ def generate_unique_id():
 
 
 def record_data(SystemSize, UniqueID, ClientName, ClientLocation, ReferredBy,
-                                                    Inverter_TYP, Inverter_Name, Inverter_Watt, InverterPrice,Number_of_Inverter1,
-                                                    Inverter2_TYP, Inverter2_Name, Inverter2_Watt, Inverter2Price,Number_of_Inverter2,
-                                                    Name_of_Panels, panelprice, Number_of_Panels, pv_balance, Carriage_Cost,
-                                                    Installation, Net_Metering, Foundation, Structure_Type, template_file,
-                                                    Quotation_TYP, TotalCostNormal, TotalCostRaised, TotalCostNormalNNI, TotalCostRaisedNNI):
+                Inverter_TYP, Inverter_Name, Inverter_Watt, InverterPrice, Number_of_Inverter1,
+                Inverter2_TYP, Inverter2_Name, Inverter2_Watt, Inverter2Price, Number_of_Inverter2,
+                Name_of_Panels, panelprice, Number_of_Panels, pv_balance, Carriage_Cost,
+                Installation, Net_Metering, Foundation, Earthing_val, Structure_Type, template_file,
+                Quotation_TYP, BatteryPrice, BatteryName, BatteryPieces, BatterySpecs,
+                TotalCostNormal, TotalCostRaised, TotalCostNormalNNI, TotalCostRaisedNNI, NumberofDifferentInverters):
     serial_list = []
     current_date_time = datetime.now()
     current_date_time = str(current_date_time)
@@ -820,12 +943,15 @@ def record_data(SystemSize, UniqueID, ClientName, ClientLocation, ReferredBy,
     SerialNumber = int(serial_list[-1]) + 1
     if SerialNumber == 0:
         SerialNumber = 1
-    Customer_Data_Sheet.append_row([SerialNumber, current_date_time, UniqueID, SystemSize, ClientName, ClientLocation, ReferredBy,
-                                                    Inverter_TYP, Inverter_Name, Inverter_Watt, InverterPrice, Number_of_Inverter1,
-                                                    Inverter2_TYP, Inverter2_Name, Inverter2_Watt, Inverter2Price, Number_of_Inverter2,
-                                                    Name_of_Panels, panelprice, Number_of_Panels, pv_balance, Carriage_Cost,
-                                                    Installation, Net_Metering, Foundation, Structure_Type, template_file,
-                                                    Quotation_TYP, TotalCostNormal, TotalCostRaised, TotalCostNormalNNI, TotalCostRaisedNNI])
+    Customer_Data_Sheet.append_row(
+        [SerialNumber, current_date_time, UniqueID, SystemSize, ClientName, ClientLocation, ReferredBy,
+         Inverter_TYP, Inverter_Name, Inverter_Watt, InverterPrice, Number_of_Inverter1,
+         Inverter2_TYP, Inverter2_Name, Inverter2_Watt, Inverter2Price, Number_of_Inverter2,
+         Name_of_Panels, panelprice, Number_of_Panels, pv_balance, Carriage_Cost,
+         Installation, Net_Metering, Foundation, Earthing_val, Structure_Type, template_file,
+         Quotation_TYP, BatteryPrice, BatteryName, BatteryPieces, BatterySpecs,
+         TotalCostNormal, TotalCostRaised, TotalCostNormalNNI, TotalCostRaisedNNI, NumberofDifferentInverters])
+
 
 def update_names_of_inverters_and_panels(*args):
     global advancepanelnames
@@ -841,6 +967,175 @@ def update_names_of_inverters_and_panels(*args):
             advancepanelnames = "Canadian/Jinko/JA/Astro/Trina/Longi"
             advancecablename = "AC Single Core 6mm Cable"
 
+
+def get_template_type(inverter_selection,structure_type,quotation_type,inverter_type,inverter2_type):
+    template_file =""
+    update_names_of_inverters_and_panels()
+    if inverter_selection == "1":
+        if inverter_type == "Grid Tie":
+            if structure_type == "Normal":
+                if quotation_type == "Itemised General Net Metering Included":
+                    template_file = (".\\Templates\\GridTieInverters\\GridTieNormal\\GridTieNormalNetMeteringIncluded"
+                                     "\\GTITN_Template.docx")
+                if quotation_type == "Itemised General Net Metering Not Included":
+                    template_file = (".\\Templates\\GridTieInverters\\GridTieNormal"
+                                     "\\GridTieNormalNetMeteringNotIncluded\\GTITNNI_Template.docx")
+                if quotation_type == "Itemised Specify Brand Net Metering Included":
+                    template_file = (".\\Templates\\GridTieInverters\\GridTieNormal\\GridTieNormalNetMeteringIncluded"
+                                     "\\GTITNSPI_Template.docx")
+                if quotation_type == "Itemised Specify Brand Net Metering Not Included":
+                    template_file = (".\\Templates\\GridTieInverters\\GridTieNormal"
+                                     "\\GridTieNormalNetMeteringNotIncluded\\GTITNNISPI_Template.docx")
+            if structure_type == "Raised":
+                if quotation_type == "Itemised General Net Metering Included":
+                    template_file = (".\\Templates\\GridTieInverters\\GridTieRaised\\GridTieRaisedNetMeteringIncluded"
+                                     "\\GTITR_Template.docx")
+                if quotation_type == "Itemised General Net Metering Not Included":
+                    template_file = (".\\Templates\\GridTieInverters\\GridTieRaised\\GridTieRaisedNetMeteringIncluded"
+                                     "\\GTITRNI_Template.docx")
+                if quotation_type == "Itemised Specify Brand Net Metering Included":
+                    template_file = (".\\Templates\\GridTieInverters\\GridTieRaised\\GridTieRaisedNetMeteringIncluded"
+                                     "\\GTITRSPI_Template.docx")
+                if quotation_type == "Itemised Specify Brand Net Metering Not Included":
+                    template_file = (".\\Templates\\GridTieInverters\\GridTieRaised\\GridTieRaisedNetMeteringIncluded"
+                                     "\\GTITRNISPI_Template.docx")
+        if inverter_type == "Hybrid":
+            if structure_type == "Normal":
+                if quotation_type == "Itemised General Net Metering Included":
+                    template_file = (".\\Templates\\HybridInverters\\HybridNormal\\HybridNormalNetMeteringIncluded"
+                                     "\\HITN_Template.docx")
+                if quotation_type == "Itemised General Net Metering Not Included":
+                    template_file = (".\\Templates\\HybridInverters\\HybridNormal\\HybridNormalNetMeteringNotIncluded"
+                                     "\\HITNNI_Template.docx")
+                if quotation_type == "Itemised Specify Brand Net Metering Included":
+                    template_file = (".\\Templates\\HybridInverters\\HybridNormal\\HybridNormalNetMeteringIncluded"
+                                     "\\HITNSPI_Template.docx")
+                if quotation_type == "Itemised Specify Brand Net Metering Not Included":
+                    template_file = (".\\Templates\\HybridInverters\\HybridNormal\\HybridNormalNetMeteringNotIncluded"
+                                     "\\HITNNISPI_Template.docx")
+            if structure_type == "Raised":
+                if quotation_type == "Itemised General Net Metering Included":
+                    template_file = (".\\Templates\\HybridInverters\\HybridRaised\\HybridRaisedNetMeteringIncluded"
+                                     "\\HITR_Template.docx")
+                if quotation_type == "Itemised General Net Metering Not Included":
+                    template_file = (".\\Templates\\HybridInverters\\HybridRaised\\HybridRaisedNetMeteringNotIncluded"
+                                     "\\HITRNI_Template.docx")
+                if quotation_type == "Itemised Specify Brand Net Metering Included":
+                    template_file = (".\\Templates\\HybridInverters\\HybridRaised\\HybridRaisedNetMeteringIncluded"
+                                     "\\HITRSPI_Template.docx")
+                if quotation_type == "Itemised Specify Brand Net Metering Not Included":
+                    template_file = (".\\Templates\\HybridInverters\\HybridRaised\\HybridRaisedNetMeteringNotIncluded"
+                                     "\\HITRNISPI_Template.docx")
+    if inverter_selection == "2":
+        if inverter_type == "Grid Tie" and inverter2_type == "Hybrid":
+            if structure_type == "Normal":
+                if quotation_type == "Itemised General Net Metering Included":
+                    template_file = (".\\Templates\\GridTieInverters\\GridTieNormal\\GridTieNormalNetMeteringIncluded"
+                                     "\\GTITN_WHI_Template.docx")
+                if quotation_type == "Itemised General Net Metering Not Included":
+                    template_file = (".\\Templates\\GridTieInverters\\GridTieNormal"
+                                     "\\GridTieNormalNetMeteringNotIncluded\\GTITNNI_WHI_Template.docx")
+                if quotation_type == "Itemised Brand Net Metering Included":
+                    template_file = (".\\Templates\\GridTieInverters\\GridTieNormal\\GridTieNormalNetMeteringIncluded"
+                                     "\\GTITNSPI_WHI_Template.docx")
+                if quotation_type == "Itemised Specify Brand Net Metering Not Included":
+                    template_file = (".\\Templates\\GridTieInverters\\GridTieNormal"
+                                     "\\GridTieNormalNetMeteringNotIncluded\\GTITNNISPI_WHI_Template.docx")
+            if structure_type == "Raised":
+                if quotation_type == "Itemised General Net Metering Included":
+                    template_file = (".\\Templates\\GridTieInverters\\GridTieRaised\\GridTieRaisedNetMeteringIncluded"
+                                     "\\GTITR_WHI_Template.docx")
+                if quotation_type == "Itemised General Net Metering Not Included":
+                    template_file = (".\\Templates\\GridTieInverters\\GridTieRaised"
+                                     "\\GridTieRaisedNetMeteringNotIncluded\\GTITRNI_WHI_Template.docx")
+                if quotation_type == "Itemised Specify Brand Net Metering Included":
+                    template_file = (".\\Templates\\GridTieInverters\\GridTieRaised\\GridTieRaisedNetMeteringIncluded"
+                                     "\\GTITRSPI_WHI_Template.docx")
+                if quotation_type == "Itemised Specify Brand Net Metering Not Included":
+                    template_file = (".\\Templates\\GridTieInverters\\GridTieRaised"
+                                     "\\GridTieRaisedNetMeteringNotIncluded\\GTITRNISPI_WHI_Template.docx")
+        if inverter_type == "Grid Tie" and inverter2_type == "Grid Tie":
+            if structure_type == "Normal":
+                if quotation_type == "Itemised General Net Metering Included":
+                    template_file = (".\\Templates\\GridTieInverters\\GridTieNormal\\GridTieNormalNetMeteringIncluded"
+                                     "\\GTITN_WGTI_Template.docx")
+                if quotation_type == "Itemised General Net Metering Not Included":
+                    template_file = (".\\Templates\\GridTieInverters\\GridTieNormal"
+                                     "\\GridTieNormalNetMeteringNotIncluded\\GTITNNI_WGTI_Template.docx")
+                if quotation_type == "Itemised Specify Brand Net Metering Included":
+                    template_file = (".\\Templates\\GridTieInverters\\GridTieNormal\\GridTieNormalNetMeteringIncluded"
+                                     "\\GTITNSPI_WGTI_Template.docx")
+                if quotation_type == "Itemised Specify Brand Net Metering Not Included":
+                    template_file = (".\\Templates\\GridTieInverters\\GridTieNormal"
+                                     "\\GridTieNormalNetMeteringNotIncluded\\GTITNNISPI_WGTI_Template.docx")
+            if structure_type == "Raised":
+                if quotation_type == "Itemised General Net Metering Included":
+                    template_file = (".\\Templates\\GridTieInverters\\GridTieRaised\\GridTieRaisedNetMeteringIncluded"
+                                     "\\GTIT_WGTI_Template.docx")
+                if quotation_type == "Itemised General Net Metering Not Included":
+                    template_file = (".\\Templates\\GridTieInverters\\GridTieRaised"
+                                     "\\GridTieRaisedNetMeteringNotIncluded\\GTITRNI_WGTI_Template.docx")
+                if quotation_type == "Itemised Specify Brand Net Metering Included":
+                    template_file = (".\\Templates\\GridTieInverters\\GridTieRaised\\GridTieRaisedNetMeteringIncluded"
+                                     "\\GTITRSPI_WGTI_Template.docx")
+                if quotation_type == "Itemised Specify Brand Net Metering Not Included":
+                    template_file = (".\\Templates\\GridTieInverters\\GridTieRaised"
+                                     "\\GridTieRaisedNetMeteringNotIncluded\\GTITRNISPI_WGTI_Template.docx")
+        if inverter_type == "Hybrid" and inverter2_type == "Grid Tie":
+            if structure_type == "Normal":
+                if quotation_type == "Itemised General Net Metering Included":
+                    template_file = (".\\Templates\\HybridInverters\\HybridNormal\\HybridNormalNetMeteringIncluded"
+                                     "\\HITN_WGTI_Template.docx")
+                if quotation_type == "Itemised General Net Metering Not Included":
+                    template_file = (".\\Templates\\HybridInverters\\HybridNormal\\HybridNormalNetMeteringNotIncluded"
+                                     "\\HITNNI_WGTI_Template.docx")
+                if quotation_type == "Itemised Specify Brand Net Metering Included":
+                    template_file = (".\\Templates\\HybridInverters\\HybridNormal\\HybridNormalNetMeteringIncluded"
+                                     "\\HITNSPI_WGTI_Template.docx")
+                if quotation_type == "Itemised Specify Brand Net Metering Not Included":
+                    template_file = (".\\Templates\\HybridInverters\\HybridNormal\\HybridNormalNetMeteringNotIncluded"
+                                     "\\HITNNISPI_WGTI_Template.docx")
+            if structure_type == "Raised":
+                if quotation_type == "Itemised General Net Metering Included":
+                    template_file = (".\\Templates\\HybridInverters\\HybridRaised\\HybridRaisedNetMeteringIncluded"
+                                     "\\HITR_WGTI_Template.docx")
+                if quotation_type == "Itemised General Net Metering Not Included":
+                    template_file = (".\\Templates\\HybridInverters\\HybridRaised\\HybridRaisedNetMeteringNotIncluded"
+                                     "\\HITRNI_WGTI_Template.docx")
+                if quotation_type == "Itemised Specify Brand Net Metering Included":
+                    template_file = (".\\Templates\\HybridInverters\\HybridRaised\\HybridRaisedNetMeteringIncluded"
+                                     "\\HITRSPI_WGTI_Template.docx")
+                if quotation_type == "Itemised Specify Brand Net Metering Not Included":
+                    template_file = (".\\Templates\\HybridInverters\\HybridRaised\\HybridRaisedNetMeteringNotIncluded"
+                                     "\\HITRNISPI_WGTI_Template.docx")
+        if inverter_type == "Hybrid" and inverter2_type == "Hybrid":
+            if structure_type == "Normal":
+                if quotation_type == "Itemised General Net Metering Included":
+                    template_file = (".\\Templates\\HybridInverters\\HybridNormal\\HybridNormalNetMeteringIncluded"
+                                     "\\HITN_WHI_Template.docx")
+                if quotation_type == "Itemised General Net Metering Not Included":
+                    template_file = (".\\Templates\\HybridInverters\\HybridNormal\\HybridNormalNetMeteringNotIncluded"
+                                     "\\HITNNI_WHI_Template.docx")
+                if quotation_type == "Itemised Specify Brand Net Metering Included":
+                    template_file = (".\\Templates\\HybridInverters\\HybridNormal\\HybridNormalNetMeteringIncluded"
+                                     "\\HITN_WHI_Template.docx")
+                if quotation_type == "Itemised Specify Brand Net Metering Not Included":
+                    template_file = (".\\Templates\\HybridInverters\\HybridNormal\\HybridNormalNetMeteringNotIncluded"
+                                     "\\HITNNISPI_WHI_Template.docx")
+            if structure_type == "Raised":
+                if quotation_type == "Itemised General Net Metering Included":
+                    template_file = (".\\Templates\\HybridInverters\\HybridRaised\\HybridRaisedNetMeteringIncluded"
+                                     "\\HITR_WHI_Template.docx")
+                if quotation_type == "Itemised General Net Metering Not Included":
+                    template_file = (".\\Templates\\HybridInverters\\HybridRaised\\HybridRaisedNetMeteringNotIncluded"
+                                     "\\HITRNI_WHI_Template.docx")
+                if quotation_type == "Itemised Specify Brand Net Metering Included":
+                    template_file = (".\\Templates\\HybridInverters\\HybridRaised\\HybridRaisedNetMeteringIncluded"
+                                     "\\HITRSPI_WHI_Template.docx")
+                if quotation_type == "Itemised Specify Brand Net Metering Not Included":
+                    template_file = (".\\Templates\\HybridInverters\\HybridRaised\\HybridRaisedNetMeteringNotIncluded"
+                                     "\\HITRNISPI_WHI_Template.docx")
+    print(template_file)
 
 def update_template_type(*args):
     update_names_of_inverters_and_panels()
@@ -879,13 +1174,15 @@ def update_template_type(*args):
                     template_file = (".\\Templates\\GridTieInverters\\GridTieRaised\\GridTieRaisedNetMeteringIncluded"
                                      "\\GTGR_Template.docx")
                 if Quotation_type_combobox.get() == "General Net Metering Not Included":
-                    template_file = (".\\Templates\\GridTieInverters\\GridTieRaised\\GridTieRaisedNetMeteringNotIncluded"
-                                     "\\GTGRNI_Template.docx")
+                    template_file = (
+                        ".\\Templates\\GridTieInverters\\GridTieRaised\\GridTieRaisedNetMeteringNotIncluded"
+                        "\\GTGRNI_Template.docx")
                 if Quotation_type_combobox.get() == "Specify Brand Net Metering Included":
                     template_file = (".\\Templates\\GridTieInverters\\GridTieRaised\\GridTieRaisedNetMeteringIncluded"
                                      "\\GTGRSPI_Template.docx")
                 if Quotation_type_combobox.get() == "Specify Brand Net Metering Not Included":
-                    template_file = (".\\Templates\\GridTieInverters\\GridTieRaised\\GridTieRaisedNetMeteringNotIncluded\\GTGRNISPI_Template.docx")
+                    template_file = (
+                        ".\\Templates\\GridTieInverters\\GridTieRaised\\GridTieRaisedNetMeteringNotIncluded\\GTGRNISPI_Template.docx")
                 if Quotation_type_combobox.get() == "Itemised General Net Metering Included":
                     template_file = (".\\Templates\\GridTieInverters\\GridTieRaised\\GridTieRaisedNetMeteringIncluded"
                                      "\\GTITR_Template.docx")
@@ -1416,8 +1713,7 @@ inverter_selection_frame.grid(row=inverterselectionrow, column=0, sticky="news",
 tracker_inverters = tkinter.StringVar(inverter_selection_frame)
 
 inverter_selection_label = tkinter.Label(inverter_selection_frame, text="Number of Different Inverters")
-inverter_selection_combobox = ttk.Combobox(inverter_selection_frame, values=['1', '2', '3'],
-                                           textvariable=tracker_inverters)
+inverter_selection_combobox = ttk.Combobox(inverter_selection_frame, values=['1', '2', '3'], textvariable=tracker_inverters)
 inverter_selection_label.grid(row=inverterselectionrow, column=0)
 inverter_selection_combobox.grid(row=inverterselectionrowentry, column=0)
 
@@ -1582,9 +1878,12 @@ Quotation_type = tkinter.Label(panel_frame, text="Quotation Type")
 Quotation_type_combobox = ttk.Combobox(panel_frame,
                                        values=["General Net Metering Included", "Specify Brand Net Metering Included",
                                                "General Net Metering Not Included",
-                                               "Specify Brand Net Metering Not Included", "Itemised General Net Metering Included", " Itemised Specify Brand Net Metering Included",
+                                               "Specify Brand Net Metering Not Included",
+                                               "Itemised General Net Metering Included",
+                                               "Itemised Specify Brand Net Metering Included",
                                                "Itemised General Net Metering Not Included",
-                                               "Itemised Specify Brand Net Metering Not Included"], textvariable=update_tracker)
+                                               "Itemised Specify Brand Net Metering Not Included"],
+                                       textvariable=update_tracker)
 Quotation_type.grid(row=panelrow, column=3, padx=5)
 Quotation_type_combobox.grid(row=panelrowentry, column=3, padx=5)
 
@@ -1599,27 +1898,35 @@ battery_frame.grid(row=batteryrow, column=0, sticky="news", padx=20, pady=15)
 
 Battery_Name_Label = tkinter.Label(battery_frame, text="Battery Name")
 Battery_Name_Entry = ttk.Entry(battery_frame)
-Battery_Name_Label.grid(row=batteryrow, column=0, padx=5)
-Battery_Name_Entry.grid(row=batteryentryrow, column=0, padx=5)
+Battery_Name_Label.grid(row=batteryrow, column=0, padx=10)
+Battery_Name_Entry.grid(row=batteryentryrow, column=0, padx=10)
 
 if Battery_Name_Entry.get() == "":
     Battery_Name_Entry.insert(0, "Daewoo Deep Cycle")
 
 Battery_Price_Label = tkinter.Label(battery_frame, text="Battery Price")
 Battery_Price_Entry = ttk.Entry(battery_frame)
-Battery_Price_Label.grid(row=batteryrow, column=1, padx=5)
-Battery_Price_Entry.grid(row=batteryentryrow, column=1, padx=5)
+Battery_Price_Label.grid(row=batteryrow, column=1, padx=10)
+Battery_Price_Entry.grid(row=batteryentryrow, column=1, padx=10)
 
 if Battery_Price_Entry.get() == "":
     Battery_Price_Entry.insert(0, "45000")
 
 Number_of_Batteries_Label = tkinter.Label(battery_frame, text="Number of Batteries")
 Number_of_Batteries_Entry = ttk.Entry(battery_frame)
-Number_of_Batteries_Label.grid(row=batteryrow, column=2, padx=5)
-Number_of_Batteries_Entry.grid(row=batteryentryrow, column=2, padx=5)
+Number_of_Batteries_Label.grid(row=batteryrow, column=2, padx=10)
+Number_of_Batteries_Entry.grid(row=batteryentryrow, column=2, padx=10)
+
+Battery_Specification_Label = tkinter.Label(battery_frame, text="Specifications of Battery")
+Battery_Specification_Entry = tkinter.Entry(battery_frame)
+Battery_Specification_Label.grid(row=batteryrow, column=3, padx=10)
+Battery_Specification_Entry.grid(row=batteryentryrow, column=3, padx=10)
 
 if Number_of_Batteries_Entry.get() == "":
     Number_of_Batteries_Entry.insert(0, '4')
+
+if Battery_Specification_Entry.get() == "":
+    Battery_Specification_Entry.insert(0, "12 V  180 AH")
 
 for widget in user_info_frame.winfo_children():
     widget.grid_configure(padx=10, pady=5)
@@ -1662,7 +1969,6 @@ if Earthing_entry.get() == "":
 
 for widget in courses_frame.winfo_children():
     widget.grid_configure(padx=12, pady=5)
-
 
 options_frame = tkinter.LabelFrame(frame, text="Options Frame")
 options_frame.grid(row=17, column=0, sticky="news", padx=20, pady=10)
