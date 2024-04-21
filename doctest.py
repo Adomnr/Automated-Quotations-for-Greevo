@@ -2,34 +2,6 @@ from spire.doc import *
 import os
 from datetime import datetime
 
-def new_folder(filename):
-    # Get the current date
-    current_date = datetime.now()
-
-    # Define the filename
-    filename = "example.txt"  # Replace "example.txt" with your actual filename
-
-    # Define the directory structure
-    directory_year_month = current_date.strftime("%B %Y")
-    directory_day = current_date.strftime("%B %d")
-
-    # Create the directories if they don't exist
-    os.makedirs(os.path.join(directory_year_month, directory_day), exist_ok=True)
-
-    # Combine the directory paths
-    folder_path = os.path.join(directory_year_month, directory_day)
-
-    # Path to the new file
-    file_path = os.path.join(folder_path, filename)
-
-    # Create the new file
-    with open(file_path, "w") as file:
-        # You can write to the file here if needed
-        pass
-
-    print(f"New file '{filename}' created in folder '{folder_path}'")
-
-
 def document_creater(UniqueID, ClientName, ClientLocation, SystemSize, Inverter_TYP,
                     Inverter_Watt, Inverter2_Watt, Number_of_Panels,
                     Net_Metering, template_file, TotalCostNormal, TotalCostRaised,
@@ -108,7 +80,40 @@ def document_creater(UniqueID, ClientName, ClientLocation, SystemSize, Inverter_
     if Structure_TYP == "Normal":
         structure_rate = int(structure_rate_normal) * int((int(Number_of_Panels)/2))
     else:
-        structure_rate = int(structure_rate_raised) * int(panelprice) * int(panelwattage)
+        structure_rate = int(structure_rate_raised) * int(Number_of_Panels) * int(panelwattage)
+
+    def convert_to_int_and_format(value):
+        try:
+            return '{:,}'.format(int(value))
+        except ValueError:
+            return None  # or handle the error as you wish
+
+    # Perform conversion and formatting for each variable
+    TotalPanelPrice = convert_to_int_and_format(TotalPanelPrice)
+    structure_rate = convert_to_int_and_format(structure_rate)
+    pv_balance = convert_to_int_and_format(pv_balance)
+    Earthing_val = convert_to_int_and_format(Earthing_val)
+    Installation = convert_to_int_and_format(Installation)
+    Carriage_Cost = convert_to_int_and_format(Carriage_Cost)
+    Foundation = convert_to_int_and_format(Foundation)
+    InverterPrice = convert_to_int_and_format(InverterPrice)
+    batteryprice = convert_to_int_and_format(batteryprice)
+
+    # Execute statements only if conversion was successful
+    if all(variable is not None for variable in
+           [TotalPanelPrice, structure_rate, pv_balance, Earthing_val, Installation, Carriage_Cost, Foundation,
+            InverterPrice, batteryprice]):
+        # Execute statements here
+        TotalPanelPrice = f'{TotalPanelPrice}'
+        structure_rate = f'{structure_rate}'
+        pv_balance = f'{pv_balance}'
+        Earthing_val = f'{Earthing_val}'
+        Installation = f'{Installation}'
+        Carriage_Cost = f'{Carriage_Cost}'
+        Foundation = f'{Foundation}'
+        InverterPrice = f'{InverterPrice}'
+        batteryprice = f'{batteryprice}'
+    print("Structure Price: "+ structure_rate)
 
     # Store the placeholders and new strings in a dictionary
     dictionary = {
@@ -159,21 +164,26 @@ def document_creater(UniqueID, ClientName, ClientLocation, SystemSize, Inverter_
 
     filename = str(SystemSize) + "kW " + str(Inverter_TYP) + " " + str(
         ClientLocation) + " Quotation" + str(UniqueID) + ".docx"
-    print(filename)
-    savename = "output/"+filename+".docx"
 
+    current_date = datetime.now()
+
+    # Define the directory structure
     directory_year_month = current_date.strftime("%B %Y")
     directory_day = current_date.strftime("%B %d")
 
     # Create the directories if they don't exist
-    os.makedirs(os.path.join(directory_year_month, directory_day), exist_ok=True)
+    os.makedirs(os.path.join(directory_year_month, directory_day, "Word Files"), exist_ok=True)
+    os.makedirs(os.path.join(directory_year_month, directory_day, "TradeMark Removed File"), exist_ok=True)
+    os.makedirs(os.path.join(directory_year_month, directory_day, "PDF Files"), exist_ok=True)
 
     # Combine the directory paths
     folder_path = os.path.join(directory_year_month, directory_day)
 
     # Path to the new file
-    file_path = os.path.join(folder_path, filename)
+    file_path = os.path.join(folder_path, "Word Files", filename)
+
+    print(file_path)
 
     # Save the resulting document
-    document.SaveToFile(savename, FileFormat.Docx2016)
+    document.SaveToFile(file_path, FileFormat.Docx2016)
     document.Close()

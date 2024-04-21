@@ -655,17 +655,15 @@ def enter_data():
             valueinwords = capitalize_first_character_in_each_word(convert_to_words(TotalCostRaisedNNI))
         else:
             valueinwords = capitalize_first_character_in_each_word(convert_to_words(TotalCostNormalNNI))
-    print("1")
     print(valueinwords)
     if True:
         # User info
-        print("2")
         SystemSize = System_Size_combobox.get()
         ClientName = Client_Name_combobox.get()
         ClientLocation = Client_Location_combobox.get()
         ReferredBy = Reffered_combobox.get()
+
         if SystemSize and ClientName and ClientLocation and ReferredBy:
-            print("3")
             NumberofDifferentInverters = inverter_selection_combobox.get()
             Inverter_TYP = inverter_type_combobox.get()
             Inverter2_TYP = inverter2_type_combobox.get()
@@ -677,25 +675,24 @@ def enter_data():
             Number_of_Inverter2 = inverter2_number_Entry.get()
             Number_of_inverters = int(Number_of_Inverter1) + int(Number_of_Inverter2)
             Quotation_TYP = Quotation_type_combobox.get()
+
             if Inverter_TYP and Inverter_Name and Inverter_Watt:
-                print("4")
+
                 if inverter_selection_combobox.get() == "2":
-                    print("5")
+
                     if Inverter2_TYP and Inverter2_Name and Inverter2_Watt:
-                        print("6")
                         Name_of_Panels = panel_name_combobox.get()
                         Structure_Type = structure_type_combobox.get()
                         pv_balance = pv_balance_combobox.get()
+
                         if Name_of_Panels and Structure_Type and pv_balance:
-                            print("7")
                             BatteryPrice = Battery_Price_Entry.get()
                             BatteryName = Battery_Name_Entry.get()
                             BatteryPieces = Number_of_Batteries_Entry.get()
                             BatterySpecs = Battery_Specification_Entry.get()
+
                             if Inverter_TYP == "Hybrid" or Inverter2_TYP == "Hybrid":
-                                print("8")
                                 if BatteryPrice and BatteryName and BatteryPieces:
-                                    print("9")
                                     Earthing_val = Earthing_entry.get()
                                     Foundation = foundation_work_entry.get()
                                     Carriage_Cost = carriage_entry.get()
@@ -731,7 +728,7 @@ def enter_data():
                                                          Structure_Type, advancepanelnames, advanceinverternames, advancecablename, NumberofDifferentInverters)
 
                                         filename = str(SystemSize) + "kW " + str(Inverter_TYP) + " " + str(
-                                            ClientLocation) + " Quotation" + str(UniqueID)
+                                            ClientLocation) + " Quotation" + str(UniqueID) + ".docx"
                                         tradeMarkRemover(filename)
 
                                         record_data(SystemSize, UniqueID, ClientName, ClientLocation, ReferredBy,
@@ -789,9 +786,8 @@ def enter_data():
                                                     pv_balance, Structure_Type, advancepanelnames, advanceinverternames,advancecablename, NumberofDifferentInverters)
 
                                     filename = str(SystemSize) + "kW " + str(Inverter_TYP) + " " + str(
-                                        ClientLocation) + " Quotation" + str(UniqueID)
+                                        ClientLocation) + " Quotation" + str(UniqueID) + ".docx"
                                     tradeMarkRemover(filename)
-                                    print('11')
 
                                     record_data(SystemSize, UniqueID, ClientName, ClientLocation, ReferredBy,
                                                 Inverter_TYP, Inverter_Name, Inverter_Watt, InverterPrice,
@@ -801,7 +797,7 @@ def enter_data():
                                                 Name_of_Panels, panelprice, Number_of_Panels, pv_balance, Carriage_Cost,
                                                 Installation, Net_Metering, Foundation, Earthing_val, Structure_Type,
                                                 template_file,
-                                                Quotation_TYP, BatteryPrice, BatteryName, BatteryPieces, BatterySpecs,
+                                                Quotation_TYP, "", "", "", "",
                                                 TotalCostNormal, TotalCostRaised, TotalCostNormalNNI,
                                                 TotalCostRaisedNNI, NumberofDifferentInverters)
                                     tkinter.messagebox.showinfo(title="Success",
@@ -813,28 +809,22 @@ def enter_data():
                             tkinter.messagebox.showwarning(title="Error",
                                                            message="Enter Structure Type and PV Balance.")
                 else:
-                    print("5")
-                    print("6")
                     Name_of_Panels = panel_name_combobox.get()
                     Structure_Type = structure_type_combobox.get()
                     pv_balance = pv_balance_combobox.get()
                     if Name_of_Panels and Structure_Type and pv_balance:
-                        print("7")
                         BatteryPrice = Battery_Price_Entry.get()
                         BatteryName = Battery_Name_Entry.get()
                         BatteryPieces = Number_of_Batteries_Entry.get()
                         BatterySpecs = Battery_Specification_Entry.get()
                         if Inverter_TYP == "Hybrid":
-                            print("8")
                             if BatteryPrice and BatteryName and BatteryPieces:
-                                print("9")
                                 Earthing_val = Earthing_entry.get()
                                 Foundation = foundation_work_entry.get()
                                 Carriage_Cost = carriage_entry.get()
                                 Installation = installation_entry.get()
                                 Net_Metering = net_metering_entry.get()
                                 if Carriage_Cost and Installation and Net_Metering and Foundation and Earthing_val:
-                                    print("10")
                                     print("System Size: ", SystemSize, "Client Name: ", ClientName, "Client Location: ",
                                           ClientLocation)
                                     print("Referred by: ", ReferredBy, "Inverter Type: ", Inverter_TYP,
@@ -867,7 +857,7 @@ def enter_data():
                                                      advancecablename, NumberofDifferentInverters)
 
                                     filename = str(SystemSize) + "kW " + str(Inverter_TYP) + " " + str(
-                                        ClientLocation) + " Quotation" + str(UniqueID)
+                                        ClientLocation) + " Quotation" + str(UniqueID) + ".docx"
                                     tradeMarkRemover(filename)
 
                                     record_data(SystemSize, UniqueID, ClientName, ClientLocation, ReferredBy,
@@ -923,7 +913,7 @@ def enter_data():
                                                  advancecablename, NumberofDifferentInverters)
 
                                 filename = str(SystemSize) + "kW " + str(Inverter_TYP) + " " + str(
-                                    ClientLocation) + " Quotation" + str(UniqueID)
+                                    ClientLocation) + " Quotation" + str(UniqueID) + ".docx"
                                 tradeMarkRemover(filename)
 
                                 record_data(SystemSize, UniqueID, ClientName, ClientLocation, ReferredBy,
@@ -934,7 +924,7 @@ def enter_data():
                                             Name_of_Panels, panelprice, Number_of_Panels, pv_balance, Carriage_Cost,
                                             Installation, Net_Metering, Foundation, Earthing_val, Structure_Type,
                                             template_file,
-                                            Quotation_TYP, BatteryPrice, BatteryName, BatteryPieces, BatterySpecs,
+                                            Quotation_TYP, "", "", "", "",
                                             TotalCostNormal, TotalCostRaised, TotalCostNormalNNI, TotalCostRaisedNNI, NumberofDifferentInverters)
                                 tkinter.messagebox.showinfo(title="Success",
                                                             message="File is Created and Recorded\nFileName: " + filename)
@@ -967,32 +957,29 @@ def total_cost_calculator(*args):
     Foundation_Work = foundation_work_entry.get()
     Number_of_Inverter1 = inverter_number_Entry.get()
     Number_of_Inverter2 = inverter2_number_Entry.get()
-    print(InverterPrice, "  ", Number_of_Inverter1, "  ", Inverter2Price, "  ", Number_of_Inverter2, "  ",
-          Number_of_Panels, "  ", panelwattage, "  ", panelprice, "  ", pv_balance, "  ", Carriage_Cost, "  ",
-          Installation, "  ", Net_Metering, "  ", Foundation_Work)
 
     TotalCostRaised = round_up_to_nearest_thousand( (int(InverterPrice) * int(Number_of_Inverter1)) + (int(Inverter2Price) * int(Number_of_Inverter2)) +
                                                     (int(structure_rate_raised) * int(Number_of_Panels) * int(panelwattage)) + ( int(panelwattage) * int(panelprice) *
                                                     int(Number_of_Panels)) + int(pv_balance) + int(Carriage_Cost) + int(Installation) + int(Net_Metering) + int(Foundation_Work))
 
-    print(TotalCostRaised)
+    print("Total Cost with Raised Structure and Net Metering Included: " + TotalCostRaised)
 
     TotalCostRaisedNNI = round_up_to_nearest_thousand((int(InverterPrice) * int(Number_of_Inverter1)) + (int(Inverter2Price) * int(Number_of_Inverter2)) +
                                                       (int(structure_rate_raised) *int(Number_of_Panels) * int(panelwattage)) + (int(panelwattage) * int(panelprice) *
                                                     int(Number_of_Panels)) + int(pv_balance) + int(Carriage_Cost) + int(Installation) + int( Foundation_Work))
 
-    print(TotalCostRaisedNNI)
+    print("Total Cost with Raised Structure and Net Metering Not Included: " + TotalCostRaisedNNI)
 
     TotalCostNormal = round_up_to_nearest_thousand((int(InverterPrice) * int(Number_of_Inverter1)) + (int(Inverter2Price) * int(Number_of_Inverter2)) +
                                                     int((int(structure_rate_normal) * (int(Number_of_Panels) / 2))) + (int(panelwattage) * int(panelprice) *
                                                     int(Number_of_Panels)) + int(pv_balance) + int(Carriage_Cost) + int(Installation) + int(Net_Metering) + int(Foundation_Work))
 
-    print(TotalCostNormal)
+    print("Total Cost with Normal Structure and Net Metering Included: " + TotalCostNormal)
 
     TotalCostNormalNNI = round_up_to_nearest_thousand((int(InverterPrice) * int(Number_of_Inverter1)) + (int(Inverter2Price) * int(Number_of_Inverter2)) + int(
                                                     (int(structure_rate_normal) * (int(Number_of_Panels) / 2))) + (int(panelwattage) * int(panelprice) *
                                                     int( Number_of_Panels)) + int(pv_balance) + int(Carriage_Cost) + int(Installation) + int(Foundation_Work))
-    print(TotalCostNormalNNI)
+    print("Total Cost with Normal Structure and Net Metering Not Included: " + TotalCostNormalNNI)
 
 
 def convert_to_words(number):
@@ -1007,8 +994,15 @@ def generate_unique_id():
     # Generate a random component within the range of 3 digits
     random_component = uuid.uuid4().int % 1000  # 3-digit random component
     # Combine timestamp and random component to create a unique ID
+    unique_id_list = Customer_Data_Sheet.col_values(3)
+    unique_id_list.pop(0)
     unique_id = int(f"{timestamp:03d}{random_component:03d}") % 10000000
-    return unique_id
+    if unique_id != "":
+        for x in unique_id_list:
+            if int(unique_id) != int(x):
+                return unique_id
+            else:
+                generate_unique_id()
 
 
 def record_data(SystemSize, UniqueID, ClientName, ClientLocation, ReferredBy,
@@ -1364,13 +1358,11 @@ def get_template_type(inverter_selection,structure_type,quotation_type,inverter_
                 if quotation_type == "Itemised Specify Brand Net Metering Not Included":
                     template_file = (".\\Templates\\HybridInverters\\HybridRaised\\HybridRaisedNetMeteringNotIncluded"
                                      "\\HITRNISPI_WHI_Template.docx")
-    print(template_file)
+    print("Template File: " + template_file)
     return template_file
 
 def update_template_type(*args):
     update_names_of_inverters_and_panels()
-    home_dir = Path.home()
-    print(home_dir)
     global template_file
     if inverter_selection_combobox.get() == "1":
         if inverter_type_combobox.get() == "Grid Tie":
@@ -1681,7 +1673,7 @@ def update_template_type(*args):
                 if Quotation_type_combobox.get() == "Itemised Specify Brand Net Metering Not Included":
                     template_file = (".\\Templates\\HybridInverters\\HybridRaised\\HybridRaisedNetMeteringNotIncluded"
                                      "\\HITRNISPI_WHI_Template.docx")
-    print(template_file)
+    print("Template File: " + template_file)
 
 
 def inverter_selection(*args):
@@ -1722,11 +1714,11 @@ def update_panel(*args):
     global panelwattage
     i = panel_name_combobox.current()
     panelprice = Solar_Panel_Price[i]
-    print(panelprice)
+    print("Panel Price: " + panelprice)
     for x in Solar_Panel_Wattage:
         panelwattage = Solar_Panel_Wattage[i]
     PanelWattageInt = int(panelwattage)
-    print(panelwattage)
+    print("Panel Wattage: " + panelwattage)
     Panels_Numbers(PanelWattageInt)
 
 
@@ -1736,7 +1728,7 @@ def Panels_Numbers(panelwattage):
     Number_of_Panels = SZ / int(panelwattage)
     Number_of_Panels = math.ceil(Number_of_Panels)
     Number_of_Panels = int(Number_of_Panels)
-    print(Number_of_Panels)
+    print("Number of Panels: " + Number_of_Panels)
 
 
 def inverter_wattage_selection(*args):
