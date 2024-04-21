@@ -48,7 +48,8 @@ def document_creater(UniqueID, ClientName, ClientLocation, SystemSize, Inverter_
     NOS = int(int(Number_of_Panels)/2)
 
     print("was here")
-    batteryprice = int(BatteryPrice) * int(BatteryPieces)
+    if BatteryPrice != "" and BatteryPieces != "":
+        batteryprice = int(BatteryPrice) * int(BatteryPieces)
 
     panelname = Name_of_Panels[:-6]
 
@@ -85,9 +86,11 @@ def document_creater(UniqueID, ClientName, ClientLocation, SystemSize, Inverter_
     else:
         foundation_symbol = "01 Job"
 
-    if batteryprice == 0:
-        str(batteryprice)
+    batteryprice = ""
+    if BatteryPrice == "" or int(BatteryPrice) == 0:
         batteryprice = "N/A"
+    else:
+        batteryprice = str(BatteryPrice)
 
     if Installation == 0:
         installation_symbol = "N/A"
@@ -103,9 +106,9 @@ def document_creater(UniqueID, ClientName, ClientLocation, SystemSize, Inverter_
 
     structure_rate = 0
     if Structure_TYP == "Normal":
-        structure_rate = int(structure_rate_normal)
+        structure_rate = int(structure_rate_normal) * int((int(Number_of_Panels)/2))
     else:
-        structure_rate = int(structure_rate_raised)
+        structure_rate = int(structure_rate_raised) * int(panelprice) * int(panelwattage)
 
     # Store the placeholders and new strings in a dictionary
     dictionary = {
@@ -115,6 +118,7 @@ def document_creater(UniqueID, ClientName, ClientLocation, SystemSize, Inverter_
                     '[nos]': str(NOS),
                     '[noi]': str(Number_of_inverters),
                     '[iw]': str(Inverter_Watt),
+                    '[iw2]': str(Inverter2_Watt),
                     '[iwy]': str(inverter_warranty_year),
                     '[calculated_price]': str(TCR),
                     '[calculated_price_normal]': str(TCN),
@@ -124,12 +128,14 @@ def document_creater(UniqueID, ClientName, ClientLocation, SystemSize, Inverter_
                     '[bn]': str(BatteryName),
                     '[bp]': str(batteryprice),
                     '[bv]': str(BatteryPieces),
+                    '[bs]': str(BatterySpecs),
                     '[nmc]': str(Net_Metering_cost),
                     '[nms]': str(net_metering_symbol),
                     '[pn]': str(panelname),
                     '[pw]': str(panelwattage),
                     '[in]': str(Inverter_Name),
                     '[in2]': str(Inverter2_Name),
+                    '[ip]': str(InverterPrice),
                     '[fs]': str(foundation_symbol),
                     '[cs]': str(carriage_symbol),
                     '[es]': str(earthing_symbol),
@@ -152,9 +158,21 @@ def document_creater(UniqueID, ClientName, ClientLocation, SystemSize, Inverter_
         document.Replace(key, value, False, True)
 
     filename = str(SystemSize) + "kW " + str(Inverter_TYP) + " " + str(
-        ClientLocation) + " Quotation" + str(UniqueID)
+        ClientLocation) + " Quotation" + str(UniqueID) + ".docx"
     print(filename)
     savename = "output/"+filename+".docx"
+
+    directory_year_month = current_date.strftime("%B %Y")
+    directory_day = current_date.strftime("%B %d")
+
+    # Create the directories if they don't exist
+    os.makedirs(os.path.join(directory_year_month, directory_day), exist_ok=True)
+
+    # Combine the directory paths
+    folder_path = os.path.join(directory_year_month, directory_day)
+
+    # Path to the new file
+    file_path = os.path.join(folder_path, filename)
 
     # Save the resulting document
     document.SaveToFile(savename, FileFormat.Docx2016)
