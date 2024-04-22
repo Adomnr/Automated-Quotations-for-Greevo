@@ -11,7 +11,11 @@ import uuid
 import time
 from trademarkremover import *
 import math
+from spire.doc import *
+import os
 from pathlib import Path
+from docx import Document
+from docx2pdf import convert
 
 Inverter_name, Inverter_wattage, Inverter2_name, Inverter2_wattage, Inverter3_name, Inverter3_wattage = [], [], [], [], [], []
 
@@ -114,7 +118,7 @@ def exist_unique_id():
     row_data = Customer_Data_Sheet.row_values(row)
     print(row_data)
     windowID = tkinter.Tk()
-    windowID.title("Quotation Automation")
+    windowID.title("Unique ID: " + str(row_data[2]))
 
     frame = tkinter.Frame(windowID)
     frame.pack()
@@ -457,7 +461,7 @@ def exist_unique_id():
                          row_data[37])
 
         filename = str(data[3]) + "kW " + str(data[7]) + " " + str(
-            data[5]) + " Quotation" + str(data[2])
+            data[5]) + " Quotation" + str(data[2]) + ".docx"
         tradeMarkRemover(filename)
 
         record_data(data[3], data[2], data[4], data[5], data[6],
@@ -466,7 +470,7 @@ def exist_unique_id():
                 data[17], data[18], data[19], data[20], data[21],
                 data[22], data[23], data[24], data[25], data[26], data[27],
                 data[28], data[29], data[30], data[31], data[32],
-                TotalCostNormalAmend, TotalCostRaisedAmend, TotalCostNormalNNIAmend, TotalCostRaisedNNIAmend, row_data[36])
+                TotalCostNormalAmend, TotalCostRaisedAmend, TotalCostNormalNNIAmend, TotalCostRaisedNNIAmend, row_data[37])
         tkinter.messagebox.showinfo(title="Success",
                                     message="File is Created and Recorded\nFileName: " + filename)
         data = [row_data[0], row_data[1], row_data[2], System_Size_Entry.get(), Client_Name_Entry.get(),
@@ -480,6 +484,7 @@ def exist_unique_id():
                 Battery_Specification_Entry.get(), TotalCostNormalAmend, TotalCostRaisedAmend, TotalCostNormalNNIAmend, TotalCostRaisedNNIAmend]
         print(data)
         replace_row(Customer_Data_Sheet, row, data)
+        windowID.destroy()
 
     def amend_option():
         print(row)
@@ -491,9 +496,11 @@ def exist_unique_id():
                 panel_price_entry.get(), Numberofpanels_entry.get(), pv_balance_Entry.get(), carriage_entry.get(), installation_entry.get(),
                 net_metering_entry.get(), foundation_work_entry.get(), Earthing_entry.get(), structure_type_Entry.get(), row_data[27], row_data[28],
                 Battery_Price_Entry.get(), Battery_Name_Entry.get(), Number_of_Batteries_Entry.get(), Battery_Specification_Entry.get(),TotalCostNormalAmend,
-                TotalCostRaisedAmend,TotalCostNormalNNIAmend,TotalCostRaisedNNIAmend]
+                TotalCostRaisedAmend,TotalCostNormalNNIAmend,TotalCostRaisedNNIAmend,row_data[37]]
         print(data)
         replace_row(Customer_Data_Sheet,row,data)
+        windowID.destroy()
+
 
     amend_button = tkinter.Button(frame, text="Amend", command=amend_option)
     amend_button.grid(row=18, column=0, sticky="news", padx=10, pady=10)
@@ -962,24 +969,24 @@ def total_cost_calculator(*args):
                                                     (int(structure_rate_raised) * int(Number_of_Panels) * int(panelwattage)) + ( int(panelwattage) * int(panelprice) *
                                                     int(Number_of_Panels)) + int(pv_balance) + int(Carriage_Cost) + int(Installation) + int(Net_Metering) + int(Foundation_Work))
 
-    print("Total Cost with Raised Structure and Net Metering Included: " + TotalCostRaised)
+    print("Total Cost with Raised Structure and Net Metering Included: " + str(TotalCostRaised))
 
     TotalCostRaisedNNI = round_up_to_nearest_thousand((int(InverterPrice) * int(Number_of_Inverter1)) + (int(Inverter2Price) * int(Number_of_Inverter2)) +
                                                       (int(structure_rate_raised) *int(Number_of_Panels) * int(panelwattage)) + (int(panelwattage) * int(panelprice) *
                                                     int(Number_of_Panels)) + int(pv_balance) + int(Carriage_Cost) + int(Installation) + int( Foundation_Work))
 
-    print("Total Cost with Raised Structure and Net Metering Not Included: " + TotalCostRaisedNNI)
+    print("Total Cost with Raised Structure and Net Metering Not Included: " + str(TotalCostRaisedNNI))
 
     TotalCostNormal = round_up_to_nearest_thousand((int(InverterPrice) * int(Number_of_Inverter1)) + (int(Inverter2Price) * int(Number_of_Inverter2)) +
                                                     int((int(structure_rate_normal) * (int(Number_of_Panels) / 2))) + (int(panelwattage) * int(panelprice) *
                                                     int(Number_of_Panels)) + int(pv_balance) + int(Carriage_Cost) + int(Installation) + int(Net_Metering) + int(Foundation_Work))
 
-    print("Total Cost with Normal Structure and Net Metering Included: " + TotalCostNormal)
+    print("Total Cost with Normal Structure and Net Metering Included: " + str(TotalCostNormal))
 
     TotalCostNormalNNI = round_up_to_nearest_thousand((int(InverterPrice) * int(Number_of_Inverter1)) + (int(Inverter2Price) * int(Number_of_Inverter2)) + int(
                                                     (int(structure_rate_normal) * (int(Number_of_Panels) / 2))) + (int(panelwattage) * int(panelprice) *
                                                     int( Number_of_Panels)) + int(pv_balance) + int(Carriage_Cost) + int(Installation) + int(Foundation_Work))
-    print("Total Cost with Normal Structure and Net Metering Not Included: " + TotalCostNormalNNI)
+    print("Total Cost with Normal Structure and Net Metering Not Included: " + str(TotalCostNormalNNI))
 
 
 def convert_to_words(number):
@@ -996,13 +1003,19 @@ def generate_unique_id():
     # Combine timestamp and random component to create a unique ID
     unique_id_list = Customer_Data_Sheet.col_values(3)
     unique_id_list.pop(0)
+    print(unique_id_list)
     unique_id = int(f"{timestamp:03d}{random_component:03d}") % 10000000
-    if unique_id != "":
-        for x in unique_id_list:
-            if int(unique_id) != int(x):
-                return unique_id
-            else:
-                generate_unique_id()
+    index = 0
+    for x in unique_id_list:
+        if unique_id == int(x):
+            index = 1
+        else:
+            index = 0
+    if index == 0:
+        return unique_id
+    else:
+        generate_unique_id()
+    print(unique_id)
 
 
 def record_data(SystemSize, UniqueID, ClientName, ClientLocation, ReferredBy,
@@ -1728,7 +1741,7 @@ def Panels_Numbers(panelwattage):
     Number_of_Panels = SZ / int(panelwattage)
     Number_of_Panels = math.ceil(Number_of_Panels)
     Number_of_Panels = int(Number_of_Panels)
-    print("Number of Panels: " + Number_of_Panels)
+    print("Number of Panels: " + str(Number_of_Panels))
 
 
 def inverter_wattage_selection(*args):
@@ -1815,12 +1828,12 @@ def inverter_price(*args):
                 list.append(x)
             while ("" in list):
                 list.remove("")
-    print(list)
+    print("Inverter List" + str(list))
     if inverter_wattage_combobox.current() >= 0 and inverter_wattage_combobox.current() <= 20:
         index2 = int(inverter_wattage_combobox.current())
         global InverterPrice
         InverterPrice = list[index2]
-        print(InverterPrice)
+        print("Inverter Price" + str(InverterPrice))
 
 
 def inverter2_price(*args):
@@ -1838,12 +1851,12 @@ def inverter2_price(*args):
                 list.append(x)
             while ("" in list):
                 list.remove("")
-    print(list)
+    print("Inverter 2 List" + str(list))
     if inverter2_wattage_combobox.current() >= 0 and inverter2_wattage_combobox.current() <= 20:
         index2 = int(inverter2_wattage_combobox.current())
         global Inverter2Price
         Inverter2Price = list[index2]
-        print(Inverter2Price)
+        print("Inverter 2 Price" + str(InverterPrice))
 
 
 def inverter3_price(*args):
@@ -1861,12 +1874,12 @@ def inverter3_price(*args):
                 list.append(x)
             while ("" in list):
                 list.remove("")
-    print(list)
+    print("Inverter 3 List" + str(list))
     if inverter3_wattage_combobox.current() >= 0 and inverter3_wattage_combobox.current() <= 20:
         index2 = int(inverter3_wattage_combobox.current())
         global Inverter3Price
         Inverter3Price = list[index2]
-        print(Inverter3Price)
+        print("Inverter 3 Price" + str(InverterPrice))
 
 
 def inverter_number_selection(*args):
@@ -1925,7 +1938,7 @@ Client_Location_combobox.grid(row=generalrowentry, column=2)
 Reffered_label = tkinter.Label(user_info_frame, text="Referred By")
 Reffered_combobox = ttk.Combobox(user_info_frame,
                                  values=["Madam Rafia", "Engr Sajjad", "Engr Shaban", "Engr Abid", "Engr Ammar Butt",
-                                         "Engr Ubaid", "Sir Nabeel", "Engr Osama"])
+                                         "Engr Ubaid", "Sir Nabeel", "Engr Osama", "Engr Abdullah", "ELAF", "SBD"])
 Reffered_label.grid(row=generalrow, column=3)
 Reffered_combobox.grid(row=generalrowentry, column=3)
 

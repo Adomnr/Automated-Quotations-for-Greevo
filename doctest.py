@@ -21,7 +21,7 @@ def document_creater(UniqueID, ClientName, ClientLocation, SystemSize, Inverter_
 
     print("was here")
     if BatteryPrice != "" and BatteryPieces != "":
-        batteryprice = int(BatteryPrice) * int(BatteryPieces)
+        BatteryPrice = int(BatteryPrice) * int(BatteryPieces)
 
     panelname = Name_of_Panels[:-6]
 
